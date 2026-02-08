@@ -155,12 +155,10 @@ function validateCard(card, zone) {
     if (card.dataset.sat === zone.dataset.colSat) {
         card.classList.add('correct');
         card.classList.remove('wrong');
-        // On supprime le bouton de suppression si la réponse est juste
         if (trash) trash.style.display = 'none';
     } else {
         card.classList.add('wrong');
         card.classList.remove('correct');
-        // On s'assure qu'il est visible si la réponse est fausse
         if (trash) trash.style.display = 'flex';
     }
 }
@@ -174,7 +172,6 @@ function checkRowStatus(row) {
     const correctCards = row.querySelectorAll('.draggable-card.correct');
     if (correctCards.length === 5) {
         row.classList.replace('active', 'locked');
-        // Nettoyage final des boutons sur la ligne verrouillée
         row.querySelectorAll('.btn-trash').forEach(b => b.remove());
         currentStep++;
         setTimeout(startNextStep, 600);
