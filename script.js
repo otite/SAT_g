@@ -31,6 +31,9 @@ const JSONContent = {
     C35: "<p class='p-violet'>Avalanche de neige sèche ou humide toujours spontanéesDéclenchements humains et artificiels très peu probables.</p>"
 };
 
+// --- CONFIGURATION DES NOMS DE CATÉGORIES ---
+const categoryNames = ["Localisation", "C2", "C3", "C4", "C5", "C6", "S"];
+
 const satHeaders = [
     { titre: "Neige fraîche", sat: 1, desc: "Surcharge chute de neige" },
     { titre: "Neige ventée", sat: 2, desc: "Accumulations plaques" },
@@ -41,11 +44,9 @@ const satHeaders = [
 
 const rowColors = ["#15803d", "#b91c1c", "#1d4ed8", "#c2410c", "#000000", "#7e22ce", "#64748b"];
 
-// Construction automatique de cardsData à partir du JSON
 let cardsData = [];
 let cardIdCounter = 6;
 
-// Lignes C6 à C35 (Lignes 0 à 5)
 for (let line = 0; line < 6; line++) {
     for (let sat = 1; sat <= 5; sat++) {
         let key = `C${cardIdCounter}`;
@@ -60,7 +61,6 @@ for (let line = 0; line < 6; line++) {
     }
 }
 
-// Ligne S (Schémas)
 const schemaNames = ["fraiche", "ventee", "persistante", "mouillee", "glissante"];
 for (let sat = 1; sat <= 5; sat++) {
     cardsData.push({
@@ -115,7 +115,7 @@ function createCardElement(card) {
     if (card.image) {
         cardEl.innerHTML = `<img src="${card.image}" class="card-img">`;
     } else {
-        cardEl.innerHTML = card.html; // On injecte le HTML brut (le <p class...>)
+        cardEl.innerHTML = card.html;
     }
 
     const btnTrash = document.createElement('button');
@@ -139,7 +139,8 @@ function addNewRow(index) {
     const catLabel = document.createElement('div');
     catLabel.className = 'cat-label';
     catLabel.style.backgroundColor = color;
-    catLabel.innerText = index < 6 ? `L${index + 1}` : "S";
+    // Utilisation du nom de catégorie défini plus haut
+    catLabel.innerText = categoryNames[index];
     rowDiv.appendChild(catLabel);
 
     for (let c = 0; c < 5; c++) {
