@@ -1,0 +1,92 @@
+/* --- CONFIGURATION GLOBALE --- */
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8fafc; padding: 20px; }
+#game-container { max-width: 1300px; margin: auto; }
+
+/* --- STRUCTURE DES GRILLES (6 COLONNES) --- */
+#header-sat, .board-row {
+    display: grid;
+    grid-template-columns: 60px repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 10px;
+    border: 3px solid transparent;
+    border-radius: 12px;
+    align-items: center;
+}
+
+/* --- DIMENSIONS CARRÉES UNIFIÉES --- */
+.card-box, .draggable-card, .dropzone, .sat-header {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- STYLES DES ÉLÉMENTS --- */
+.sat-header { background: #1e3a8a; color: white; border: none; font-weight: bold; }
+.dropzone { border: 2px dashed #cbd5e1; background: rgba(255, 255, 255, 0.4); }
+
+.draggable-card { 
+    background: white; 
+    border: 2px solid #cbd5e1; 
+    cursor: grab; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    transition: transform 0.2s;
+}
+
+/* --- ÉTATS DE VALIDATION --- */
+.correct { border: 5px solid #22c55e !important; background: #f0fdf4 !important; }
+.wrong { border: 5px solid #ef4444 !important; background: #fef2f2 !important; }
+
+/* --- BOUTON CORBEILLE (MASQUÉ DANS LE DECK) --- */
+.btn-trash {
+    position: absolute; top: 6px; right: 6px;
+    background: #ef4444; color: white; border: none;
+    border-radius: 50%; width: 24px; height: 24px;
+    cursor: pointer; font-weight: bold; display: none; z-index: 10;
+}
+/* Visible uniquement quand la carte est posée sur le plateau */
+.dropzone .draggable-card .btn-trash { display: flex; justify-content: center; align-items: center; }
+
+/* --- LABELS DE CATÉGORIES (C1-C6) --- */
+.cat-label {
+    width: 45px; height: 45px; display: flex;
+    justify-content: center; align-items: center;
+    color: white; font-weight: bold; border-radius: 50%;
+    font-size: 1.2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.cat-label.spacer { background: transparent; box-shadow: none; }
+
+/* --- TEXTE DES CARTES --- */
+.card-box strong { font-size: clamp(0.7rem, 1vw, 0.9rem); line-height: 1.2; }
+.card-box .desc { font-size: clamp(0.55rem, 0.9vw, 0.75rem); line-height: 1.1; margin-top: 6px; color: #475569; }
+.sat-header .desc { color: #bfdbfe; }
+.line-indicator { position: absolute; top: 0; left: 0; width: 100%; height: 6px; }
+
+/* --- PIOCHE (DECK) --- */
+#deck {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px; padding: 25px; background: #f1f5f9;
+    border-radius: 15px; margin-top: 30px; justify-items: center;
+}
+#deck .draggable-card { max-width: 160px; }
+
+/* --- ÉTATS DE LIGNE --- */
+.board-row.active { border-style: solid; }
+.board-row.locked { opacity: 1; pointer-events: none; background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 800px) {
+    #header-sat, .board-row { grid-template-columns: 45px repeat(5, 1fr); gap: 6px; }
+    #deck { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+    .card-box .desc { display: none; }
+}
