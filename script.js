@@ -1,64 +1,79 @@
-const cardsData = [
-    // Header SAT (Ligne 0 visuelle)
-    { id: 1, titre: "Neige fraîche", sat: 1, description: "La surcharge liée à la chute de neige est la cause principale de l'instabilité." },
-    { id: 2, titre: "Neige ventée", sat: 2, description: "Le vent transporte la neige et forme des accumulations (plaques)." },
-    { id: 3, titre: "Couche fragile persistante", sat: 3, description: "Une couche fragile est enfouie dans le manteau neigeux (souvent invisible)." },
-    { id: 4, titre: "Neige mouillée", sat: 4, description: "Le réchauffement ou la pluie affaiblissent la cohésion de la neige." },
-    { id: 5, titre: "Neige glissante", sat: 5, description: "L'ensemble du manteau neigeux glisse sur le sol (souvent herbeux)." },
+const JSONContent = {
+    C6 : "<p class='p-green'>Partout, plus prononcé en altitude. Actif pendant la chute, s’atténue rapidement.</p>",
+    C7 : "<p class='p-green'>Distribution très variable souvent prêt des crêtes. Situation plus active pendant l’épisode de transport.</p>",
+    C8 : "<p class='p-green'>Couche fragile souvent répandue en versants froids. Rupture facile aux points de moindre épaisseur.Instabilité durable.</p>",
+    C9 : "<p class='p-green'>Toutes orientation si pluie (pire en versant froid), perte de stabilité très rapide.Dépend de l’orientation et de l’altitude.</p>",
+    C10: "<p class='p-green'>Sur sols lisses ou humides. Toutes orientations mais plus fréquent en orientation ensoleillées.</p>",
+    C11: "<p class='p-red'>Départs spontanés sans lien direct avec la météo. Glissement rapide par perte de friction à l’interface neige-sol.</p>",
+    C12: "<p class='p-red'>Même par météo « neutre » un pratiquant peut rompre une C. F. persistante et provoquer un déclenchement.</p>",
+    C13: "<p class='p-red'>Déstabilisation due à l’apport d’eau (pluie ou fonte).Déclenchement d’une C.F. existante ou d’une interface ou l’eau s’est accumulée.</p>",
+    C14: "<p class='p-red'>Le transport surcharge une couche fragile.La neige récente transportée prend de la cohésion (déclenchement facile).</p>",
+    C15: "<p class='p-red'>Surcharge sur couche fragile ou formé pendant la chute.</p>",
+    C16: "<p class='p-blue'>Quantité critique de neige fraiche.Activité avalancheuse en cours.</p>",
+    C17: "<p class='p-blue'>Signes de transports de neige, d’érosion ou d’accumulation. Fissures, déclenchement de plaques dures ou friables.</p>",
+    C18: "<p class='p-blue'>Pluie sur neige fraiche : activité avalancheuse spontanée forte.Escargots au début des purgesEnfoncement en profondeur.</p>",
+    C19: "<p class='p-blue'>Se méfier des versants froids et à faibles enneigement. Whoums, fissures sous les skis, déclenchements à distance.</p>",
+    C20: "<p class='p-blue'>Souvent présence de fissures et reptations. Manteau neigeux homogène.</p>",
+    C21: "<p class='p-orange'>Quand les fissures de glissement sont apparues ? Butée en pied de pente ?</p>",
+    C22: "<p class='p-orange'>Profondeur et distribution de la couche Fragile ?Historique et observations du manteau (sondages tests) ?</p>",
+    C23: "<p class='p-orange'>Depuis quand ? Première humidification ? Profondeur humidification ? Evolution à court therme ?</p>",
+    C24: "<p class='p-orange'>Age de la neige venté ? Distribution dans la pente ?Force du vent ?</p>",
+    C25: "<p class='p-orange'>Vent en cours ? Variation de T° ? Couche de surface avant la chute ?</p>",
+    C26: "<p class='p-black'>Attention à la visibilité et pentes dominantes.Patienter 1 à 3 jours.</p>",
+    C27: "<p class='p-black'>Tracé judicieux. Evitement surtout les terrains accumulés et raides (dès prépa avec le BERA et sur le terrain).</p>",
+    C28: "<p class='p-black'>S’éloigner des versants froids si pluie forte lors de la 1ere humidification.Soleil : jouer avec orientation et horaire.</p>",
+    C29: "<p class='p-black'>Comportement défensif, au pied et à distance des pentes. Complexe, peu de signaux de surfaceInfos BERA, profils- tests.</p>",
+    C30: "<p class='p-black'>Contournement si possible. Très difficile à prévoir et à déclencher. Gestion identique aux séracs.</p>",
+    C31: "<p class='p-violet'>Avalanches de plaque sèche friable ou de neige sans cohésion. Départ spontanés ou provoqué.</p>",
+    C32: "<p class='p-violet'>Avalanches de plaque sèche friable ou dure. Départs spontanés et déclenchements provoqués possibles.</p>",
+    C33: "<p class='p-violet'>Avalanches de plaque sèche. Déclenchements provoqués.Déclenchement à distance possible Grandes propagation fréquentes.</p>",
+    C34: "<p class='p-violet'>Avalanches de plaque de neige humide ou de neige mouillé sans cohésionPrincipalement départs spontanés.</p>",
+    C35: "<p class='p-violet'>Avalanche de neige sèche ou humide toujours spontanéesDéclenchements humains et artificiels très peu probables.</p>"
+};
 
-    // Ligne C1 (Index 0)
-    { id: 6, titre: "Chute > 30cm", sat: 1, line: 0, color: "#3b82f6", description: "Épaisseur de neige fraîche jugée critique pour la stabilité." },
-    { id: 7, titre: "Dépôts récents", sat: 2, line: 0, color: "#3b82f6", description: "Le vent a déposé de la neige derrière les crêtes ou dans les combes." },
-    { id: 8, titre: "Givre de surface enfoui", sat: 3, line: 0, color: "#3b82f6", description: "Une couche de cristaux légers a été recouverte par une chute de neige." },
-    { id: 9, titre: "Pluie", sat: 4, line: 0, color: "#3b82f6", description: "L'eau liquide s'infiltre et lubrifie les couches internes." },
-    { id: 10, titre: "Gueules de baleine", sat: 5, line: 0, color: "#3b82f6", description: "Fissures qui s'ouvrent jusqu'au sol, signe de glissement lent." },
-
-    // Ligne C2 (Index 1)
-    { id: 11, titre: "Froid intense", sat: 1, line: 1, color: "#6366f1", description: "Le froid ralentit la stabilisation de la neige fraîche." },
-    { id: 12, titre: "Corniches", sat: 2, line: 1, color: "#6366f1", description: "Accumulations de neige en surplomb sur les crêtes." },
-    { id: 13, titre: "Grains anguleux", sat: 3, line: 1, color: "#6366f1", description: "Cristaux sans cohésion qui se forment à cause du froid durable." },
-    { id: 14, titre: "Redoux marqué", sat: 4, line: 1, color: "#6366f1", description: "Hausse rapide de la température qui humidifie le manteau." },
-    { id: 15, titre: "Pentes herbeuses", sat: 5, line: 1, color: "#6366f1", description: "Terrain lisse qui favorise le glissement de fond." },
-
-    // Ligne C3 (Index 2)
-    { id: 16, titre: "Surcharge", sat: 1, line: 2, color: "#8b5cf6", description: "Le poids de la neige fraîche suffit à déclencher une avalanche." },
-    { id: 17, titre: "Neige transportée", sat: 2, line: 2, color: "#8b5cf6", description: "La neige est déplacée d'une zone vers une autre par le vent." },
-    { id: 18, titre: "Bruit de 'Woum'", sat: 3, line: 2, color: "#8b5cf6", description: "Signe caractéristique de l'effondrement d'une couche fragile." },
-    { id: 19, titre: "Rayonnement Sud", sat: 4, line: 2, color: "#8b5cf6", description: "Le soleil direct liquéfie les liaisons entre les grains." },
-    { id: 20, titre: "Dalles rocheuses", sat: 5, line: 2, color: "#8b5cf6", description: "Le sol lisse et imperméable facilite le glissement global." },
-
-    // Ligne C4 (Index 3)
-    { id: 21, titre: "Visibilité réduite", sat: 1, line: 3, color: "#f59e0b", description: "Le brouillard ou la neige empêchent d'évaluer les dangers." },
-    { id: 22, titre: "Chasse-neige", sat: 2, line: 3, color: "#f59e0b", description: "Vent visible soulevant la neige en surface." },
-    { id: 23, titre: "Déclenchement à distance", sat: 3, line: 3, color: "#f59e0b", description: "La rupture se propage loin de l'endroit où se trouve le skieur." },
-    { id: 24, titre: "Nuit douce", sat: 4, line: 3, color: "#f59e0b", description: "L'absence de regel nocturne empêche la stabilisation matinale." },
-    { id: 25, titre: "Lignes de glissement", sat: 5, line: 3, color: "#f59e0b", description: "Fissures horizontales montrant que le manteau rampe sur le sol." },
-
-    // Ligne C5 (Index 4)
-    { id: 26, titre: "Purges naturelles", sat: 1, line: 4, color: "#ec4899", description: "Des avalanches partent toutes seules pendant la chute." },
-    { id: 27, titre: "Accumulations mates", sat: 2, line: 4, color: "#ec4899", description: "Neige d'aspect crayeux et cassant, typique des plaques." },
-    { id: 28, titre: "Fissures au passage", sat: 3, line: 4, color: "#ec4899", description: "Des fissures se propagent sous les skis, signe de danger." },
-    { id: 29, titre: "Enfoncement pied", sat: 4, line: 4, color: "#ec4899", description: "On s'enfonce dans une neige lourde et sans consistance." },
-    { id: 30, titre: "Danger permanent", sat: 5, line: 4, color: "#ec4899", description: "Le glissement peut se transformer en avalanche à tout moment." },
-
-    // Ligne C6 (Index 5)
-    { id: 31, titre: "Neige poudreuse", sat: 1, line: 5, color: "#06b6d4", description: "Neige très légère, facile à mobiliser par le vent." },
-    { id: 32, titre: "Zones décapées", sat: 2, line: 5, color: "#06b6d4", description: "Le vent a mis à nu la vieille neige dure ou le sol." },
-    { id: 33, titre: "Gobelets", sat: 3, line: 5, color: "#06b6d4", description: "Grains sans aucune cohésion situés à la base du manteau." },
-    { id: 34, titre: "Avalanche de fonte", sat: 4, line: 5, color: "#06b6d4", description: "Écoulement massif de neige humide, souvent l'après-midi." },
-    { id: 35, titre: "Dépôts au pied", sat: 5, line: 5, color: "#06b6d4", description: "Tas de neige au bas des pentes, signe de glissements passés." },
-
-    // Ligne S (Schémas - Index 6)
-    { id: 36, sat: 1, line: 6, color: "#64748b", image: "img/fraiche.png", description: "Schéma Neige fraîche" },
-    { id: 37, sat: 2, line: 6, color: "#64748b", image: "img/ventee.png", description: "Schéma Neige ventée" },
-    { id: 38, sat: 3, line: 6, color: "#64748b", image: "img/persistante.png", description: "Schéma Couche fragile" },
-    { id: 39, sat: 4, line: 6, color: "#64748b", image: "img/mouillee.png", description: "Schéma Neige mouillée" },
-    { id: 40, sat: 5, line: 6, color: "#64748b", image: "img/glissante.png", description: "Schéma Neige glissante" }
+const satHeaders = [
+    { titre: "Neige fraîche", sat: 1, desc: "Surcharge chute de neige" },
+    { titre: "Neige ventée", sat: 2, desc: "Accumulations plaques" },
+    { titre: "C.F. persistante", sat: 3, desc: "Couche fragile invisible" },
+    { titre: "Neige mouillée", sat: 4, desc: "Réchauffement ou pluie" },
+    { titre: "Neige glissante", sat: 5, desc: "Glissement sur le sol" }
 ];
 
+const rowColors = ["#15803d", "#b91c1c", "#1d4ed8", "#c2410c", "#000000", "#7e22ce", "#64748b"];
+
+// Construction automatique de cardsData à partir du JSON
+let cardsData = [];
+let cardIdCounter = 6;
+
+// Lignes C6 à C35 (Lignes 0 à 5)
+for (let line = 0; line < 6; line++) {
+    for (let sat = 1; sat <= 5; sat++) {
+        let key = `C${cardIdCounter}`;
+        cardsData.push({
+            id: cardIdCounter,
+            sat: sat,
+            line: line,
+            color: rowColors[line],
+            html: JSONContent[key]
+        });
+        cardIdCounter++;
+    }
+}
+
+// Ligne S (Schémas)
+const schemaNames = ["fraiche", "ventee", "persistante", "mouillee", "glissante"];
+for (let sat = 1; sat <= 5; sat++) {
+    cardsData.push({
+        id: cardIdCounter,
+        sat: sat,
+        line: 6,
+        color: rowColors[6],
+        image: `img/${schemaNames[sat-1]}.png`
+    });
+    cardIdCounter++;
+}
 
 let currentStep = 0;
-const rowColors = ["#3b82f6", "#6366f1", "#8b5cf6", "#f59e0b", "#ec4899", "#06b6d4", "#64748b"];
 
 function initGame() {
     const headerRow = document.getElementById('header-sat');
@@ -66,10 +81,10 @@ function initGame() {
     spacer.className = 'cat-label spacer';
     headerRow.appendChild(spacer);
 
-    cardsData.slice(0, 5).forEach(card => {
+    satHeaders.forEach(sat => {
         const div = document.createElement('div');
         div.className = 'card-box sat-header';
-        div.innerHTML = `<strong>${card.titre}</strong><div class="desc">${card.description}</div>`;
+        div.innerHTML = `<strong>${sat.titre}</strong><div class="desc">${sat.desc}</div>`;
         headerRow.appendChild(div);
     });
     startNextStep();
@@ -98,9 +113,9 @@ function createCardElement(card) {
     cardEl.style.borderColor = card.color;
 
     if (card.image) {
-        cardEl.innerHTML = `<img src="${card.image}" class="card-img" alt="${card.description}"><div class="line-indicator" style="background:${card.color}"></div>`;
+        cardEl.innerHTML = `<img src="${card.image}" class="card-img">`;
     } else {
-        cardEl.innerHTML = `<div class="line-indicator" style="background:${card.color}"></div><strong>${card.titre}</strong><div class="desc">${card.description}</div>`;
+        cardEl.innerHTML = card.html; // On injecte le HTML brut (le <p class...>)
     }
 
     const btnTrash = document.createElement('button');
@@ -118,20 +133,19 @@ function addNewRow(index) {
     const rowDiv = document.createElement('div');
     const color = rowColors[index];
     rowDiv.className = `board-row active row-${index}`;
-    rowDiv.style.backgroundColor = `${color}10`; 
+    rowDiv.style.backgroundColor = `${color}08`; 
     rowDiv.style.borderColor = color;
     
     const catLabel = document.createElement('div');
     catLabel.className = 'cat-label';
     catLabel.style.backgroundColor = color;
-    catLabel.innerText = index < 6 ? `C${index + 1}` : "S";
+    catLabel.innerText = index < 6 ? `L${index + 1}` : "S";
     rowDiv.appendChild(catLabel);
 
     for (let c = 0; c < 5; c++) {
         const zone = document.createElement('div');
         zone.className = 'dropzone';
         zone.dataset.colSat = c + 1;
-        zone.style.borderColor = `${color}40`;
         zone.ondragover = (e) => e.preventDefault();
         zone.ondrop = handleDrop;
         rowDiv.appendChild(zone);
