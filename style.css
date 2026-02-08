@@ -116,9 +116,8 @@ body {
     cursor: pointer; font-weight: bold; display: none; z-index: 10;
 }
 
-/* Affichage uniquement si dans une dropzone (sécurité CSS) */
 .dropzone .draggable-card .btn-trash { display: flex; justify-content: center; align-items: center; }
-#deck .btn-trash { display: none !important; } /* Sécurité deck */
+#deck .btn-trash { display: none !important; }
 
 /* --- LABELS CATÉGORIES --- */
 .cat-label {

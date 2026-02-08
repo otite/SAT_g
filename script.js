@@ -5,52 +5,52 @@ const cardsData = [
     { id: 4, titre: "Neige Mouillée", sat: 4, description: "Réchauffement ou pluie" },
     { id: 5, titre: "Glissements", sat: 5, description: "Avalanche de fond" },
     
-    // C1
-    { id: 6, titre: "Chute > 30cm", sat: 1, line: 0, color: "#3b82f6", description: "Quantité critique en 24h." },
-    { id: 7, titre: "Corniches", sat: 2, line: 0, color: "#3b82f6", description: "Surplombs sur les crêtes." },
-    { id: 8, titre: "Gobelets", sat: 3, line: 0, color: "#3b82f6", description: "Grains sans cohésion à la base." },
-    { id: 9, titre: "Pluie", sat: 4, line: 0, color: "#3b82f6", description: "L'eau fragilise le manteau." },
-    { id: 10, titre: "Gueule de baleine", sat: 5, line: 0, color: "#3b82f6", description: "Fissure de glissement au sol." },
+    // Ligne 1 (C1)
+    { id: 6, titre: "Transport important", sat: 2, line: 0, color: "#3b82f6", description: "Transport de neige par le vent (formation de plaques)." },
+    { id: 7, titre: "Redoux marqué", sat: 4, line: 0, color: "#3b82f6", description: "Réchauffement important ou pluie." },
+    { id: 8, titre: "Chute > 30cm", sat: 1, line: 0, color: "#3b82f6", description: "Quantité critique de neige fraîche tombée en 24h." },
+    { id: 9, titre: "Gueules de baleine", sat: 5, line: 0, color: "#3b82f6", description: "Fissure de glissement traversant tout le manteau jusqu'au sol." },
+    { id: 10, titre: "Bruit de 'Woum'", sat: 3, line: 0, color: "#3b82f6", description: "Effondrement d'une couche fragile au passage d'un skieur." },
 
-    // C2
-    { id: 11, titre: "Purges naturelles", sat: 1, line: 1, color: "#6366f1", description: "Avalanches pendant la chute." },
-    { id: 12, titre: "Dépôts de neige", sat: 2, line: 1, color: "#6366f1", description: "Accumulations mates." },
-    { id: 13, titre: "Bruit de 'Woum'", sat: 3, line: 1, color: "#6366f1", description: "Effondrement de couche." },
-    { id: 14, titre: "Rayonnement Sud", sat: 4, line: 1, color: "#6366f1", description: "Le soleil chauffe les pentes." },
-    { id: 15, titre: "Pentes herbeuses", sat: 5, line: 1, color: "#6366f1", description: "Terrain favorisant le glissement." },
+    // Ligne 2 (C2)
+    { id: 11, titre: "Dalles de rocher", sat: 5, line: 1, color: "#6366f1", description: "Le terrain favorise le glissement de tout le manteau." },
+    { id: 12, titre: "Neige peu dense", sat: 1, line: 1, color: "#6366f1", description: "Cristaux légers et froids facilitant le transport ultérieur." },
+    { id: 13, titre: "Accumulations mates", sat: 2, line: 1, color: "#6366f1", description: "Neige transportée d'aspect crayeux et souvent friable." },
+    { id: 14, titre: "Rayonnement fort", sat: 4, line: 1, color: "#6366f1", description: "Le soleil chauffe et humidifie les couches de surface." },
+    { id: 15, titre: "Fissures longues", sat: 3, line: 1, color: "#6366f1", description: "Propagation de la rupture sur de longues distances." },
 
-    // C3
-    { id: 16, titre: "Froid intense", sat: 1, line: 2, color: "#8b5cf6", description: "Empêche la stabilisation." },
-    { id: 17, titre: "Zones décapées", sat: 2, line: 2, color: "#8b5cf6", description: "Neige arrachée par le vent." },
-    { id: 18, titre: "Déclenchement distance", sat: 3, line: 2, color: "#8b5cf6", description: "Propagation de la rupture." },
-    { id: 19, titre: "Boules de neige", sat: 4, line: 2, color: "#8b5cf6", description: "Signe de fonte en surface." },
-    { id: 20, titre: "Dalles rocheuses", sat: 5, line: 2, color: "#8b5cf6", description: "Surfaces lisses." },
+    // Ligne 3 (C3)
+    { id: 16, titre: "Grains anguleux", sat: 3, line: 2, color: "#8b5cf6", description: "Formation de cristaux sans cohésion par fort gradient thermique." },
+    { id: 17, titre: "Avalanche de fond", sat: 5, line: 2, color: "#8b5cf6", description: "Toute l'épaisseur de neige glisse sur le sol herbeux." },
+    { id: 18, titre: "Chasse-neige", sat: 2, line: 2, color: "#8b5cf6", description: "Vent fort déplaçant la neige sur les sommets." },
+    { id: 19, titre: "Nuit douce", sat: 4, line: 2, color: "#8b5cf6", description: "Absence de regel nocturne, manteau fragile dès le matin." },
+    { id: 20, titre: "Faible cohésion", sat: 1, line: 2, color: "#8b5cf6", description: "Liaisons très faibles entre les nouveaux cristaux." },
 
-    // C4
-    { id: 21, titre: "Visibilité réduite", sat: 1, line: 3, color: "#f59e0b", description: "Évaluation difficile." },
-    { id: 22, titre: "Chasse-neige", sat: 2, line: 3, color: "#f59e0b", description: "Transport de neige visible." },
-    { id: 23, titre: "Givre enfoui", sat: 3, line: 3, color: "#f59e0b", description: "Paillettes recouvertes." },
-    { id: 24, titre: "Enfoncement pied", sat: 4, line: 3, color: "#f59e0b", description: "On s'enfonce dans la soupe." },
-    { id: 25, titre: "Sol chaud", sat: 5, line: 3, color: "#f59e0b", description: "Fonte par la base." },
+    // Ligne 4 (C4)
+    { id: 21, titre: "Corniches", sat: 2, line: 3, color: "#f59e0b", description: "Surplombs instables formés sur les crêtes." },
+    { id: 22, titre: "Surcharge critique", sat: 1, line: 3, color: "#f59e0b", description: "Le poids de la nouvelle neige dépasse la résistance." },
+    { id: 23, titre: "Pentes herbeuses", sat: 5, line: 3, color: "#f59e0b", description: "Support lisse favorisant les avalanches de glissement." },
+    { id: 24, titre: "Givre de surface", sat: 3, line: 3, color: "#f59e0b", description: "Cristaux fragiles enfouis après une nouvelle chute." },
+    { id: 25, titre: "Neige 'soupe'", sat: 4, line: 3, color: "#f59e0b", description: "Perte totale de cohésion par excès d'eau liquide." },
 
-    // C5
-    { id: 26, titre: "Surcharge critique", sat: 1, line: 4, color: "#ec4899", description: "Poids sur l'ancienne neige." },
-    { id: 27, titre: "Plaque à vent", sat: 2, line: 4, color: "#ec4899", description: "Structure cassante." },
-    { id: 28, titre: "Fissures longues", sat: 3, line: 4, color: "#ec4899", description: "Se propagent au passage." },
-    { id: 29, titre: "Avalanche de fonte", sat: 4, line: 4, color: "#ec4899", description: "Neige lourde et humide." },
-    { id: 30, titre: "Danger permanent", sat: 5, line: 4, color: "#ec4899", description: "Peut partir jour et nuit." },
+    // Ligne 5 (C5)
+    { id: 26, titre: "Zones décapées", sat: 2, line: 4, color: "#ec4899", description: "Le vent a enlevé toute la neige jusqu'à la croûte dure." },
+    { id: 27, titre: "Froid intense", sat: 1, line: 4, color: "#ec4899", description: "Bloque la stabilisation du manteau neigeux." },
+    { id: 28, titre: "Déclenchement distance", sat: 3, line: 4, color: "#ec4899", description: "Une avalanche part loin au-dessus du skieur." },
+    { id: 29, titre: "Lignes de glissement", sat: 5, line: 4, color: "#ec4899", description: "Fissures horizontales annonçant un départ imminent." },
+    { id: 30, titre: "Pentes raides Sud", sat: 4, line: 4, color: "#ec4899", description: "Exposition la plus sensible au réchauffement printanier." },
 
-    // C6
-    { id: 31, titre: "Cristaux légers", sat: 1, line: 5, color: "#06b6d4", description: "Faciles à mobiliser." },
-    { id: 32, titre: "Sifflement vent", sat: 2, line: 5, color: "#06b6d4", description: "Indicateur de transport." },
-    { id: 33, titre: "Test colonne", sat: 3, line: 5, color: "#06b6d4", description: "Identification rupture." },
-    { id: 34, titre: "Nuit douce", sat: 4, line: 5, color: "#06b6d4", description: "Absence de regel nocturne." },
-    { id: 35, titre: "Dépôt massif", sat: 5, line: 5, color: "#06b6d4", description: "Au pied des pentes raides." },
+    // Ligne 6 (C6)
+    { id: 31, titre: "Gobelets", sat: 3, line: 5, color: "#06b6d4", description: "Couche fragile persistante située souvent en profondeur." },
+    { id: 32, titre: "Sifflement du vent", sat: 2, line: 5, color: "#06b6d4", description: "Indicateur sonore d'un transport actif en cours." },
+    { id: 33, titre: "Avalanche de fonte", sat: 4, line: 5, color: "#06b6d4", description: "Écoulement lent de neige lourde et humide." },
+    { id: 34, titre: "Purges spontanées", sat: 1, line: 5, color: "#06b6d4", description: "L'excès de poids provoque des départs naturels." },
+    { id: 35, titre: "Zone de dépôt", sat: 5, line: 5, color: "#06b6d4", description: "Accumulation de neige au bas d'une pente de glissement." },
 
-    // S
-    { id: 36, titre: "Schéma Fraîche", sat: 1, line: 6, color: "#64748b", description: "Visuel : chute." },
+    // Schémas (S)
+    { id: 36, titre: "Schéma Fraîche", sat: 1, line: 6, color: "#64748b", description: "Visuel : chute de neige." },
     { id: 37, titre: "Schéma Vent", sat: 2, line: 6, color: "#64748b", description: "Visuel : transport." },
-    { id: 38, titre: "Schéma Fragile", sat: 3, line: 6, color: "#64748b", description: "Visuel : grains." },
+    { id: 38, titre: "Schéma Persistante", sat: 3, line: 6, color: "#64748b", description: "Visuel : grains fragiles." },
     { id: 39, titre: "Schéma Mouillée", sat: 4, line: 6, color: "#64748b", description: "Visuel : fonte." },
     { id: 40, titre: "Schéma Fond", sat: 5, line: 6, color: "#64748b", description: "Visuel : glissement." }
 ];
@@ -152,7 +152,7 @@ function handleDrop(e) {
 
 function validateCard(card, zone) {
     const trash = card.querySelector('.btn-trash');
-    if (card.dataset.sat === zone.dataset.colSat) {
+    if (card.dataset.sat == zone.dataset.colSat) {
         card.classList.add('correct');
         card.classList.remove('wrong');
         if (trash) trash.style.display = 'none';
@@ -166,7 +166,7 @@ function validateCard(card, zone) {
 function moveToDeck(cardEl) {
     cardEl.classList.remove('correct', 'wrong');
     const trash = cardEl.querySelector('.btn-trash');
-    if (trash) trash.style.display = 'none'; // CORRECTION BUG : Masquer le bouton au retour au deck
+    if (trash) trash.style.display = 'none';
     document.getElementById('deck').appendChild(cardEl);
 }
 
