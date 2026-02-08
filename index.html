@@ -2,23 +2,26 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jeu SAT - Avalanche</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="game-container">
-        <div id="header-sat" class="grid-layout"></div>
-
-        <div id="game-board" class="grid-layout"></div>
-
-        <hr>
-
-        <div id="deck-container">
-            <h3>Cartes à placer</h3>
-            <div id="deck"></div>
+    <div id="landscape-message">
+        <div class="message-content">
+            <div class="icon-rotate">🔄</div>
+            <h2>Mode Paysage Requis</h2>
+            <p>Veuillez faire pivoter votre appareil pour jouer au jeu des situations typiques.</p>
         </div>
+    </div>
+
+    <div id="game-container">
+        <div id="header-sat"></div>
+
+        <div id="game-board"></div>
+
+        <div id="deck"></div>
     </div>
 
     <script src="script.js"></script>
