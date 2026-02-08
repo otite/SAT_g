@@ -81,17 +81,17 @@ body {
     overflow: hidden;
 }
 
-/* AJUSTEMENT SPÉCIFIQUE EN-TÊTE SAT (PREMIÈRE LIGNE) */
+/* EN-TÊTE SAT RÉDUIT ET TEXTE BLANC */
 .sat-header { 
     background: #1e3a8a; 
-    color: white !important; /* Texte blanc forcé */
+    color: white !important; 
     border: none; 
     font-weight: bold;
-    transform: scale(0.9); /* Réduit légèrement la taille visuelle */
+    transform: scale(0.9);
 }
 
 .sat-header .desc {
-    color: white !important; /* Description blanche forcée */
+    color: white !important;
     opacity: 0.9;
 }
 
@@ -115,7 +115,10 @@ body {
     border-radius: 50%; width: 22px; height: 22px;
     cursor: pointer; font-weight: bold; display: none; z-index: 10;
 }
+
+/* Affichage uniquement si dans une dropzone (sécurité CSS) */
 .dropzone .draggable-card .btn-trash { display: flex; justify-content: center; align-items: center; }
+#deck .btn-trash { display: none !important; } /* Sécurité deck */
 
 /* --- LABELS CATÉGORIES --- */
 .cat-label {

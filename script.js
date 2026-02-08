@@ -165,6 +165,8 @@ function validateCard(card, zone) {
 
 function moveToDeck(cardEl) {
     cardEl.classList.remove('correct', 'wrong');
+    const trash = cardEl.querySelector('.btn-trash');
+    if (trash) trash.style.display = 'none'; // CORRECTION BUG : Masquer le bouton au retour au deck
     document.getElementById('deck').appendChild(cardEl);
 }
 
