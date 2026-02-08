@@ -12,7 +12,7 @@ body {
     margin: auto; 
 }
 
-/* --- OVERLAY ROTATION MOBILE --- */
+/* --- OVERLAY ROTATION MOBILE (CENTRÉ) --- */
 #landscape-message {
     display: none;
     position: fixed;
@@ -21,10 +21,19 @@ body {
     color: white;
     z-index: 10000;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Centrage vertical */
+    align-items: center;     /* Centrage horizontal */
     text-align: center;
-    padding: 30px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.message-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 80%;
 }
 
 .icon-rotate {
@@ -39,13 +48,12 @@ body {
     100% { transform: rotate(0deg); }
 }
 
-/* Affichage de l'alerte en mode portrait sur petits écrans */
 @media screen and (max-width: 950px) and (orientation: portrait) {
     #landscape-message { display: flex; }
     #game-container { display: none; }
 }
 
-/* --- STRUCTURE DU PLATEAU (6 COLONNES) --- */
+/* --- STRUCTURE DU PLATEAU --- */
 #header-sat, .board-row {
     display: grid;
     grid-template-columns: 60px repeat(5, 1fr);
@@ -57,7 +65,7 @@ body {
     align-items: center;
 }
 
-/* --- DIMENSIONS CARRÉES STRICTES --- */
+/* --- DIMENSIONS CARRÉES --- */
 .card-box, .draggable-card, .dropzone, .sat-header {
     aspect-ratio: 1 / 1;
     width: 100%;
@@ -87,13 +95,14 @@ body {
 .correct { border: 5px solid #22c55e !important; background: #f0fdf4 !important; }
 .wrong { border: 5px solid #ef4444 !important; background: #fef2f2 !important; }
 
-/* --- BOUTON SUPPRIMER (MASQUÉ DANS LE DECK) --- */
+/* --- BOUTON SUPPRIMER (DYNAMIQUE) --- */
 .btn-trash {
     position: absolute; top: 5px; right: 5px;
     background: #ef4444; color: white; border: none;
     border-radius: 50%; width: 22px; height: 22px;
     cursor: pointer; font-weight: bold; display: none; z-index: 10;
 }
+/* Visible uniquement quand la carte est dans une dropzone */
 .dropzone .draggable-card .btn-trash { display: flex; justify-content: center; align-items: center; }
 
 /* --- LABELS CATÉGORIES --- */
@@ -119,13 +128,11 @@ body {
 }
 #deck .draggable-card { max-width: 140px; }
 
-/* --- ÉTATS DE LIGNE --- */
 .board-row.active { border-style: solid; }
 .board-row.locked { opacity: 1; pointer-events: none; background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; }
 
-/* --- RESPONSIVE MOBILE PAYSAGE --- */
 @media screen and (max-height: 500px) {
     body { padding: 10px; }
     #header-sat, .board-row { padding: 5px; gap: 8px; margin-bottom: 8px; }
-    .card-box .desc { display: none; } /* Cache les descriptions sur petits écrans pour garder le carré */
+    .card-box .desc { display: none; }
 }
