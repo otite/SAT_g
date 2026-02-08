@@ -47,12 +47,12 @@ const cardsData = [
     { id: 34, titre: "Purges spontanées", sat: 1, line: 5, color: "#06b6d4", description: "L'excès de poids provoque des départs naturels." },
     { id: 35, titre: "Zone de dépôt", sat: 5, line: 5, color: "#06b6d4", description: "Accumulation de neige au bas d'une pente de glissement." },
 
-    // Schémas (S)
-    { id: 36, titre: "Schéma Fraîche", sat: 1, line: 6, color: "#64748b", description: "Visuel : chute de neige." },
-    { id: 37, titre: "Schéma Vent", sat: 2, line: 6, color: "#64748b", description: "Visuel : transport." },
-    { id: 38, titre: "Schéma Persistante", sat: 3, line: 6, color: "#64748b", description: "Visuel : grains fragiles." },
-    { id: 39, titre: "Schéma Mouillée", sat: 4, line: 6, color: "#64748b", description: "Visuel : fonte." },
-    { id: 40, titre: "Schéma Fond", sat: 5, line: 6, color: "#64748b", description: "Visuel : glissement." }
+    // Ligne Schémas (S) - Ajoutez vos chemins d'images ici
+    { id: 36, sat: 1, line: 6, color: "#64748b", image: "img/schem_fraiche.png", description: "Chute de neige" },
+    { id: 37, sat: 2, line: 6, color: "#64748b", image: "img/schem_vent.png", description: "Transport vent" },
+    { id: 38, sat: 3, line: 6, color: "#64748b", image: "img/schem_persistante.png", description: "Couche fragile" },
+    { id: 39, sat: 4, line: 6, color: "#64748b", image: "img/schem_mouillee.png", description: "Neige humide" },
+    { id: 40, sat: 5, line: 6, color: "#64748b", image: "img/schem_fond.png", description: "Glissement fond" }
 ];
 
 let currentStep = 0;
@@ -95,11 +95,21 @@ function createCardElement(card) {
     cardEl.id = `card-${card.id}`;
     cardEl.dataset.sat = card.sat;
     cardEl.style.borderColor = card.color;
-    cardEl.innerHTML = `
-        <div class="line-indicator" style="background:${card.color}"></div>
-        <strong>${card.titre}</strong>
-        <div class="desc">${card.description}</div>
-    `;
+
+    // Gestion de l'affichage : Image ou Texte
+    if (card.image) {
+        cardEl.innerHTML = `
+            <img src="${card.image}" class="card-img" alt="${card.description}">
+            <div class="line-indicator" style="background:${card.color}"></div>
+        `;
+    } else {
+        cardEl.innerHTML = `
+            <div class="line-indicator" style="background:${card.color}"></div>
+            <strong>${card.titre}</strong>
+            <div class="desc">${card.description}</div>
+        `;
+    }
+
     const btnTrash = document.createElement('button');
     btnTrash.className = 'btn-trash';
     btnTrash.innerHTML = '×';
