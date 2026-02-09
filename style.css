@@ -20,8 +20,8 @@ body {
 /* --- HEADER SAT FLOTTANT (Sticky) --- */
 #header-sat {
     display: grid; 
-    grid-template-columns: 140px repeat(5, 1fr);
-    gap: 10px; 
+    grid-template-columns: 160px repeat(5, 1fr);
+    gap: 5px;
     padding: 20px 5px;
     
     /* Correction Sticky Mobile & Safari */
