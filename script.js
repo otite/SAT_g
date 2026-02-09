@@ -1,9 +1,9 @@
-// Données extraites de la photo (Mapping ligne par ligne)
+// Textes extraits de la photo
 const JSONContent = [
-    // LIGNE : Localisation (2ème ligne sur la photo)
+    // LIGNE : Localisation (Catégorie 1 demandée)
     ["Partout, plus prononcé en altitude. Actif pendant la chute, s’atténue rapidement.", "Distribution très variable souvent prêt des crêtes. Situation plus active pendant l’épisode de transport.", "Toutes orientation si pluie (pire en versant froid), perte de stabilité très rapide. Dépend de l’orientation et de l’altitude.", "Couche fragile souvent répandue en versants froids. Rupture facile aux points de moindre épaisseur. Instabilité durable.", "Sur sols lisses ou humides. Toutes orientations mais plus fréquent en orientation ensoleillées."],
     
-    // LIGNE : Déclenchement (1ère ligne sur la photo)
+    // LIGNE : Déclenchement
     ["Surcharge sur couche fragile ou formé pendant la chute.", "Le transport surcharge une couche fragile. La neige récente transportée prend de la cohésion (déclenchement facile).", "Déstabilisation due à l’apport d’eau (pluie ou fonte). Déclenchement d’une C.F. existante ou d’une interface ou l’eau s’est accumulée.", "Même par météo « neutre » un pratiquant peut rompre une C. F. persistante et provoquer un déclenchement.", "Départs spontanés sans lien direct avec la météo. Glissement rapide par perte de friction à l’interface neige-sol."],
     
     // LIGNE : Indices
@@ -15,7 +15,7 @@ const JSONContent = [
     // LIGNE : Type d'avalanche
     ["Avalanches de plaque sèche friable ou de neige sans cohésion. Départ spontané ou provoqué.", "Avalanches de plaque sèche friable ou dure. Départs spontanés et déclenchements provoqués possibles.", "Avalanches de plaque de neige humide ou de neige mouillée sans cohésion. Principalement départs spontanés.", "Avalanches de plaque sèche. Déclenchements provoqués. Déclenchement à distance possible. Grandes propagations fréquentes.", "Avalanche de neige sèche ou humide toujours spontanée. Déclenchements humains et artificiels très peu probables."],
     
-    // LIGNE : Conseils / Gestion
+    // LIGNE : Conseils
     ["Attention à la visibilité et pentes dominantes. Patienter 1 à 3 jours.", "Tracé judicieux. Evitement surtout les terrains accumulés et raides (dès prépa avec le BERA et sur le terrain).", "S’éloigner des versants froids si pluie forte lors de la 1ere humidification. Soleil : jouer avec orientation et horaire.", "Comportement défensif, au pied et à distance des pentes. Complexe, peu de signaux de surface. Infos BERA, profils-tests.", "Contournement si possible. Très difficile à prévoir et à déclencher. Gestion identique aux séracs."]
 ];
 
@@ -34,30 +34,16 @@ const satHeaders = [
 let cardsData = [];
 let currentStep = 0;
 
-// Préparation des cartes texte
-JSONContent.forEach((row, lineIdx) => {
-    row.forEach((text, colIdx) => {
-        cardsData.push({
-            id: `card-${lineIdx}-${colIdx}`,
-            sat: colIdx + 1,
-            line: lineIdx,
-            color: rowColors[lineIdx],
-            text: text,
-            class: textClasses[lineIdx]
-        });
+// Préparation des cartes
+JSONContent.forEach((row, lIdx) => {
+    row.forEach((text, cIdx) => {
+        cardsData.push({ id: `c-${lIdx}-${cIdx}`, sat: cIdx + 1, line: lIdx, color: rowColors[lIdx], text: text, class: textClasses[lIdx] });
     });
 });
 
-// Ajout des schémas (images) à la fin
 const schemaNames = ["fraiche", "ventee", "mouillee", "persistante", "glissante"];
 schemaNames.forEach((name, idx) => {
-    cardsData.push({
-        id: `img-${idx}`,
-        sat: idx + 1,
-        line: 6,
-        color: rowColors[6],
-        image: `img/${name}.png`
-    });
+    cardsData.push({ id: `img-${idx}`, sat: idx + 1, line: 6, color: rowColors[6], image: `img/${name}.png` });
 });
 
 function initGame() {
@@ -72,12 +58,12 @@ function initGame() {
     startNextStep();
 }
 
-// Gestion du scroll pour le header
+// Détection scroll robuste pour Sticky
 window.addEventListener('scroll', () => {
     const header = document.getElementById('header-sat');
-    if (window.scrollY > 50) header.classList.add('shrunk');
+    if (window.pageYOffset > 20) header.classList.add('shrunk');
     else header.classList.remove('shrunk');
-});
+}, { passive: true });
 
 function startNextStep() {
     if (currentStep >= 7) return;
@@ -89,7 +75,6 @@ function updateDeck(lineIndex) {
     const deck = document.getElementById('deck');
     deck.innerHTML = ""; 
     const stepCards = cardsData.filter(c => c.line === lineIndex);
-    // Mélange
     stepCards.sort(() => Math.random() - 0.5);
     stepCards.forEach(card => deck.appendChild(createCardElement(card)));
 }
@@ -123,7 +108,7 @@ function addNewRow(index) {
     const rowDiv = document.createElement('div');
     const color = rowColors[index];
     rowDiv.className = `board-row active row-${index}`;
-    rowDiv.style.borderLeft = `6px solid ${color}`;
+    rowDiv.style.borderLeft = `8px solid ${color}`;
     
     const catLabel = document.createElement('div');
     catLabel.className = 'cat-label';

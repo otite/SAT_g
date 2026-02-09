@@ -1,97 +1,162 @@
-body { 
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-    background: #f1f5f9; margin: 0; padding: 0 20px 60px 20px; color: #1e293b;
+/* --- RESET & BASE --- */
+html {
+    scroll-behavior: smooth;
 }
 
-#game-container { max-width: 1400px; margin: auto; }
+body { 
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+    background: #f1f5f9; 
+    margin: 0; 
+    padding: 0 15px 100px 15px; 
+    color: #1e293b;
+    /* Important pour le sticky mobile : ne pas mettre d'overflow hidden ici */
+}
 
-/* --- HEADER SAT STICKY --- */
+#game-container { 
+    max-width: 1600px; 
+    margin: auto; 
+}
+
+/* --- HEADER SAT FLOTTANT (Sticky) --- */
 #header-sat {
     display: grid; 
-    grid-template-columns: 130px repeat(5, 1fr);
-    gap: 12px; padding: 20px 10px;
-    position: sticky; top: 0; z-index: 1000;
-    background: #f1f5f9; transition: all 0.3s ease;
+    grid-template-columns: 140px repeat(5, 1fr);
+    gap: 10px; 
+    padding: 20px 5px;
+    
+    /* Correction Sticky Mobile & Safari */
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 2000; 
+    
+    background: #f1f5f9; 
+    border-bottom: 2px solid #cbd5e1;
+    transition: all 0.3s ease;
 }
 
 #header-sat.shrunk {
-    padding: 8px 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 8px 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-#header-sat.shrunk .sat-header { transform: scale(0.85); margin: -5px 0; }
+#header-sat.shrunk .sat-header { transform: scale(0.9); }
 #header-sat.shrunk .desc { display: none; }
 
-/* --- PLATEAU DE JEU --- */
+/* --- PLATEAU --- */
 .board-row {
     display: grid; 
-    grid-template-columns: 130px repeat(5, 1fr);
-    gap: 12px; margin-bottom: 15px; padding: 12px; 
-    background: white; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    grid-template-columns: 140px repeat(5, 1fr);
+    gap: 10px; 
+    margin: 15px 0; 
+    padding: 12px; 
+    background: white; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     align-items: center;
 }
 
 .cat-label {
-    padding: 10px; color: white; font-weight: bold; border-radius: 8px;
-    text-align: center; font-size: 0.75rem; text-transform: uppercase;
+    padding: 15px 5px; 
+    color: white; 
+    font-weight: 800; 
+    border-radius: 8px;
+    text-align: center; 
+    font-size: 0.85rem; 
+    text-transform: uppercase;
 }
 
 .sat-header { 
-    background: #1e3a8a; color: white; border-radius: 8px; padding: 10px;
-    text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    background: #1e3a8a; 
+    color: white; 
+    border-radius: 8px; 
+    padding: 12px 5px;
+    text-align: center;
 }
-.sat-header strong { font-size: 0.85rem; display: block; }
-.sat-header .desc { font-size: 0.65rem; opacity: 0.9; margin-top: 4px; }
+.sat-header strong { font-size: 0.95rem; display: block; }
+.sat-header .desc { font-size: 0.7rem; opacity: 0.9; margin-top: 4px; }
 
-/* --- CARTES ET ZONES --- */
+/* --- CARTES : TEXTE GROSSI --- */
 .dropzone { 
-    aspect-ratio: 1/1; border: 2px dashed #cbd5e1; border-radius: 8px;
-    background: #f8fafc; display: flex; align-items: center; justify-content: center;
+    aspect-ratio: 1/1; 
+    border: 2px dashed #cbd5e1; 
+    border-radius: 10px;
+    background: #f8fafc; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
 }
 
 .draggable-card { 
-    aspect-ratio: 1/1; width: 100%; background: white; border: 2px solid #e2e8f0; 
-    border-radius: 8px; cursor: grab; padding: 8px; box-sizing: border-box;
-    display: flex; align-items: center; justify-content: center; position: relative;
+    aspect-ratio: 1/1; 
+    width: 100%; 
+    background: white; 
+    border: 3px solid #e2e8f0; 
+    border-radius: 10px; 
+    cursor: grab; 
+    padding: 12px; 
+    box-sizing: border-box;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    position: relative;
+    transition: transform 0.2s;
 }
 
 .card-text { 
-    font-size: clamp(0.55rem, 0.8vw, 0.72rem); line-height: 1.2; 
-    font-weight: 600; text-align: center;
+    /* Texte agrandi pour Desktop */
+    font-size: 1rem; 
+    line-height: 1.3; 
+    font-weight: 700; 
+    text-align: center;
 }
 
-/* Couleurs de texte extraites de la photo */
+/* --- RESPONSIVE MOBILE --- */
+@media screen and (max-width: 1024px) {
+    #header-sat, .board-row {
+        grid-template-columns: 90px repeat(5, 1fr);
+        gap: 6px;
+    }
+    .card-text { font-size: 0.65rem; }
+    .cat-label { font-size: 0.6rem; padding: 8px 2px; }
+    .sat-header strong { font-size: 0.75rem; }
+    #header-sat { padding: 10px 2px; }
+}
+
+/* Couleurs de texte */
 .text-red { color: #b91c1c; }
 .text-blue { color: #1d4ed8; }
 .text-orange { color: #c2410c; }
 .text-violet { color: #7e22ce; }
 .text-black { color: #0f172a; }
 
-/* Feedback visuel */
-.correct { border: 4px solid #22c55e !important; background: #f0fdf4 !important; }
-.wrong { border: 4px solid #ef4444 !important; background: #fef2f2 !important; }
+.correct { border: 5px solid #22c55e !important; background: #f0fdf4 !important; }
+.wrong { border: 5px solid #ef4444 !important; background: #fef2f2 !important; }
+
+#deck {
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 15px; 
+    padding: 30px; 
+    background: #cbd5e1; 
+    border-radius: 15px; 
+    margin-top: 30px;
+}
+
+.card-img { width: 95%; height: 95%; object-fit: contain; }
 
 .btn-trash {
-    position: absolute; top: -8px; right: -8px; background: #ef4444; color: white;
-    border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer;
-    display: none; font-weight: bold; z-index: 10;
+    position: absolute; top: -10px; right: -10px; 
+    background: #ef4444; color: white; border: none; 
+    border-radius: 50%; width: 26px; height: 26px; 
+    cursor: pointer; display: none; font-weight: bold;
 }
-.dropzone .draggable-card.wrong .btn-trash { display: flex; align-items: center; justify-content: center; }
+.draggable-card.wrong .btn-trash { display: flex; align-items: center; justify-content: center; }
 
-/* --- PIOCHE --- */
-#deck {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 15px; padding: 30px; background: #cbd5e1; border-radius: 15px; margin-top: 30px;
-}
-
-.card-img { width: 90%; height: 90%; object-fit: contain; }
-
-/* --- RESPONSIVE LANDSCAPE --- */
 #landscape-message {
     display: none; position: fixed; inset: 0; background: #1e3a8a; color: white;
     z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
 }
-
 @media screen and (max-width: 900px) and (orientation: portrait) {
     #landscape-message { display: flex; }
     #game-container { display: none; }
