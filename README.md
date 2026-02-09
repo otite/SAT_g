@@ -9,8 +9,8 @@
 ### 2. ⏱️ Système de score et timer
 - **Timer en temps réel** : affiche le temps écoulé
 - **Compteur de cartes** : progression (X/35 cartes)
-- **Compteur d'erreurs** : pénalités pour mauvaises placements
-- **Score dynamique** : calculé en fonction du temps et des erreurs
+- **Compteur de coups** : nombre de mouvements effectués
+- **Score dynamique** : calculé en fonction du temps et de l'efficacité
 - **Écran de victoire** : récapitulatif des performances à la fin
 
 ### 3. 🎨 5 Schémas SVG créés
@@ -39,7 +39,7 @@ Diagrammes pédagogiques pour chaque SAT :
   - Shake sur erreur
   - Ligne complète : highlight vert
   - Confettis lors de la victoire
-  - Transitions fluides partout
+  - Transitions fluides pour les échanges
 
 ## 📁 Structure des fichiers
 
@@ -77,10 +77,13 @@ git push
 ## 🎮 Comment jouer
 
 1. **Lisez les en-têtes** des 5 SAT (Neige fraîche, Ventée, Humide, etc.)
-2. **Glissez chaque carte** vers la bonne colonne
-3. **Validez ligne par ligne** : une ligne doit être complète avant de passer à la suivante
-4. **Corrigez vos erreurs** : cliquez sur ✗ pour retirer une carte mal placée
-5. **Terminez les 7 catégories** pour voir votre score final !
+2. Les cartes sont **déjà placées mais mélangées** dans les cases
+3. **Glissez et échangez les cartes** entre elles pour les placer dans la bonne colonne
+4. Les cartes se **colorent en vert** (correct) ou **rouge** (incorrect)
+5. **Complétez chaque ligne** avant de passer à la suivante
+6. Terminez les **7 catégories** pour voir votre score final !
+
+💡 **Astuce** : Essayez de résoudre avec le moins de coups possible pour un meilleur score !
 
 ## 🎯 Pédagogie
 
@@ -104,7 +107,8 @@ Le jeu couvre les **7 catégories essentielles** pour chaque SAT :
 ### Ajuster le scoring
 Dans `script.js`, fonction `updateScore()` :
 ```javascript
-const score = Math.max(0, cardsPlaced * 100 + timeBonus - mistakes * 50);
+const score = Math.max(0, cardsPlaced * 100 + timeBonus - movePenalty);
+// movePenalty = nombre de coups au-delà du minimum (35) × 10
 ```
 
 ## 🌐 Compatibilité

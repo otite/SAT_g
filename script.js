@@ -36,7 +36,7 @@ let cardsData = [];
 let currentStep = 0;
 let gameStartTime = null;
 let gameEndTime = null;
-let mistakes = 0;
+let moves = 0;  // Compte les mouvements au lieu des erreurs
 let cardsPlaced = 0;
 
 // Sons
@@ -136,8 +136,8 @@ function createScorePanel() {
             <span class="score-value" id="cards-count">0/35</span>
         </div>
         <div class="score-item">
-            <span class="score-label">✗ Erreurs</span>
-            <span class="score-value" id="mistakes-count">0</span>
+            <span class="score-label">🔄 Coups</span>
+            <span class="score-value" id="moves-count">0</span>
         </div>
         <div class="score-item">
             <span class="score-label">📊 Score</span>
@@ -160,11 +160,12 @@ function updateTimer() {
 
 function updateScore() {
     document.getElementById('cards-count').textContent = `${cardsPlaced}/35`;
-    document.getElementById('mistakes-count').textContent = mistakes;
+    document.getElementById('moves-count').textContent = moves;
     
-    // Calcul du score : temps bonus - pénalités erreurs
-    const timeBonus = Math.max(0, 1000 - Math.floor((Date.now() - gameStartTime) / 1000));
-    const score = Math.max(0, cardsPlaced * 100 + timeBonus - mistakes * 50);
+    // Calcul du score : bonus pour cartes correctes - pénalité pour mouvements excessifs
+    const timeBonus = Math.max(0, 500 - Math.floor((Date.now() - gameStartTime) / 1000));
+    const movePenalty = Math.max(0, moves - 35) * 10; // Pénalité si plus de mouvements que nécessaire
+    const score = Math.max(0, cardsPlaced * 100 + timeBonus - movePenalty);
     document.getElementById('score').textContent = score;
 }
 
@@ -181,15 +182,6 @@ function startNextStep() {
         return;
     }
     addNewRow(currentStep);
-    updateDeck(currentStep);
-}
-
-function updateDeck(lineIndex) {
-    const deck = document.getElementById('deck');
-    deck.innerHTML = ""; 
-    const stepCards = cardsData.filter(c => c.line === lineIndex);
-    stepCards.sort(() => Math.random() - 0.5);
-    stepCards.forEach(card => deck.appendChild(createCardElement(card)));
 }
 
 function createCardElement(card) {
@@ -206,12 +198,6 @@ function createCardElement(card) {
         cardEl.innerHTML = `<div class="card-text ${card.class}">${card.text}</div>`;
     }
 
-    const btnTrash = document.createElement('button');
-    btnTrash.className = 'btn-trash';
-    btnTrash.innerHTML = '×';
-    btnTrash.onclick = (e) => { e.stopPropagation(); moveToDeck(cardEl); };
-    cardEl.appendChild(btnTrash);
-
     // Desktop: drag & drop
     cardEl.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id);
     
@@ -219,7 +205,6 @@ function createCardElement(card) {
     let touchStartX, touchStartY, isDragging = false;
     
     cardEl.addEventListener('touchstart', (e) => {
-        if (e.target.closest('.btn-trash')) return;
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
         isDragging = true;
@@ -247,10 +232,22 @@ function createCardElement(card) {
         
         if (zone) {
             const activeRow = zone.closest('.board-row');
-            if (activeRow?.classList.contains('active') && zone.children.length === 0) {
-                zone.appendChild(cardEl);
-                validateCard(cardEl, zone);
-                checkRowStatus(activeRow);
+            if (activeRow?.classList.contains('active')) {
+                const sourceZone = cardEl.parentElement;
+                const targetCard = zone.firstChild;
+                
+                if (sourceZone !== zone && targetCard) {
+                    // Incrémenter le compteur de mouvements
+                    moves++;
+                    
+                    // Échanger les cartes
+                    sourceZone.appendChild(targetCard);
+                    zone.appendChild(cardEl);
+                    
+                    validateCard(cardEl, zone);
+                    validateCard(targetCard, sourceZone);
+                    checkRowStatus(activeRow);
+                }
             }
         }
     });
@@ -271,14 +268,31 @@ function addNewRow(index) {
     catLabel.innerText = categoryNames[index];
     rowDiv.appendChild(catLabel);
 
+    // Récupérer les cartes de cette ligne
+    const stepCards = cardsData.filter(c => c.line === index);
+    
+    // Créer un dérangement (permutation où aucun élément n'est à sa position originale)
+    let shuffledCards;
+    do {
+        shuffledCards = [...stepCards].sort(() => Math.random() - 0.5);
+    } while (shuffledCards.some((card, i) => card.sat === i + 1));
+    // Continue de mélanger tant qu'au moins une carte est à sa bonne position
+
     for (let c = 0; c < 5; c++) {
         const zone = document.createElement('div');
         zone.className = 'dropzone';
         zone.dataset.colSat = c + 1;
         zone.ondragover = (e) => e.preventDefault();
         zone.ondrop = handleDrop;
+        
+        // Pré-remplir avec une carte mélangée
+        const card = shuffledCards[c];
+        zone.appendChild(createCardElement(card));
+        validateCard(zone.firstChild, zone, false);  // false = pas de son
+        
         rowDiv.appendChild(zone);
     }
+    
     board.appendChild(rowDiv);
     rowDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
@@ -290,50 +304,64 @@ function handleDrop(e) {
     if (!zone || !activeRow || !activeRow.classList.contains('active')) return;
 
     const cardId = e.dataTransfer.getData('text');
-    const cardEl = document.getElementById(cardId);
-    if (zone.children.length === 0) {
-        zone.appendChild(cardEl);
-        validateCard(cardEl, zone);
-        checkRowStatus(activeRow);
+    const draggedCard = document.getElementById(cardId);
+    const sourceZone = draggedCard.parentElement;
+    
+    // Si on drop sur la même zone, ne rien faire
+    if (sourceZone === zone) return;
+    
+    // Incrémenter le compteur de mouvements
+    moves++;
+    
+    // Échanger les cartes
+    const targetCard = zone.firstChild;
+    
+    if (targetCard) {
+        // Échanger les deux cartes
+        sourceZone.appendChild(targetCard);
+        zone.appendChild(draggedCard);
+        
+        // Revalider les deux cartes
+        validateCard(draggedCard, zone);
+        validateCard(targetCard, sourceZone);
+    } else {
+        // Cas improbable : zone vide (ne devrait pas arriver)
+        zone.appendChild(draggedCard);
+        validateCard(draggedCard, zone);
     }
+    
+    checkRowStatus(activeRow);
 }
 
-function validateCard(card, zone) {
+function validateCard(card, zone, playSound = true) {
     const isCorrect = card.dataset.sat == zone.dataset.colSat;
+    
+    const wasCorrect = card.classList.contains('correct');
     
     if (isCorrect) {
         card.classList.add('correct');
         card.classList.remove('wrong');
-        cardsPlaced++;
-        sounds.play('correct');
-        
-        // Animation de succès
-        card.style.animation = 'pop 0.3s ease';
-        setTimeout(() => card.style.animation = '', 300);
+        if (!wasCorrect) cardsPlaced++;
+        if (playSound) {
+            sounds.play('correct');
+            // Animation de succès
+            card.style.animation = 'pop 0.3s ease';
+            setTimeout(() => card.style.animation = '', 300);
+        }
     } else {
+        if (wasCorrect) cardsPlaced--;
         card.classList.add('wrong');
         card.classList.remove('correct');
-        mistakes++;
-        sounds.play('wrong');
-        
-        // Vibration mobile
-        if (navigator.vibrate) navigator.vibrate(100);
-        
-        // Animation d'erreur
-        card.style.animation = 'shake 0.3s ease';
-        setTimeout(() => card.style.animation = '', 300);
+        if (playSound) {
+            sounds.play('wrong');
+            // Vibration mobile
+            if (navigator.vibrate) navigator.vibrate(100);
+            // Animation d'erreur
+            card.style.animation = 'shake 0.3s ease';
+            setTimeout(() => card.style.animation = '', 300);
+        }
     }
     
-    updateScore();
-}
-
-function moveToDeck(cardEl) {
-    const wasCorrect = cardEl.classList.contains('correct');
-    if (wasCorrect) cardsPlaced--;
-    
-    cardEl.classList.remove('correct', 'wrong');
-    cardEl.style.animation = '';
-    document.getElementById('deck').appendChild(cardEl);
     updateScore();
 }
 
@@ -363,7 +391,7 @@ function endGame() {
             <h2>🏔️ Bravo ! Jeu terminé ! 🏔️</h2>
             <div class="final-stats">
                 <p><strong>⏱️ Temps total :</strong> ${Math.floor(totalTime / 60)}:${(totalTime % 60).toString().padStart(2, '0')}</p>
-                <p><strong>✗ Erreurs :</strong> ${mistakes}</p>
+                <p><strong>🔄 Nombre de coups :</strong> ${moves}</p>
                 <p><strong>📊 Score final :</strong> ${document.getElementById('score').textContent}</p>
             </div>
             <button onclick="location.reload()" class="btn-restart">Rejouer</button>
