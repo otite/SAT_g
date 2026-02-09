@@ -56,7 +56,7 @@ JSONContent.forEach((row, lIdx) => {
 
 const schemaNames = ["fraiche", "ventee", "mouillee", "persistante", "glissante"];
 schemaNames.forEach((name, idx) => {
-    cardsData.push({ id: `img-${idx}`, sat: idx + 1, line: 6, color: rowColors[6], image: `img/${name}.svg` });
+    cardsData.push({ id: `img-${idx}`, sat: idx + 1, line: 6, color: rowColors[6], image: `img/${name}.jpg` });
 });
 
 function initGame() {

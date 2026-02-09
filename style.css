@@ -198,6 +198,7 @@ body {
     width: 95%; 
     height: 95%; 
     object-fit: contain; 
+    pointer-events: none;
 }
 
 /* --- BOUTON SUPPRESSION (désactivé) --- */
