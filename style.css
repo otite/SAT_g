@@ -28,7 +28,7 @@ body {
     margin-bottom: 20px;
     position: sticky;
     top: 10px;
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .score-item {
@@ -62,7 +62,7 @@ body {
     position: -webkit-sticky;
     position: sticky;
     top: 120px;
-    z-index: 999; 
+    z-index: 1500; 
     
     background: #f1f5f9; 
     border-bottom: 2px solid #cbd5e1;
@@ -379,7 +379,22 @@ body {
 
 /* --- RESPONSIVE MOBILE --- */
 @media screen and (max-width: 1024px) {
-    #header-sat, .board-row {
+    #score-panel {
+        top: 5px;
+    }
+    
+    #header-sat {
+        grid-template-columns: 90px repeat(5, 1fr);
+        gap: 6px;
+        top: 160px; /* Ajusté pour le score-panel 2 colonnes */
+        z-index: 1500;
+    }
+    
+    #header-sat.shrunk {
+        top: 150px;
+    }
+    
+    .board-row {
         grid-template-columns: 90px repeat(5, 1fr);
         gap: 6px;
     }
@@ -409,11 +424,36 @@ body {
     .card-text { font-size: 0.65rem; }
     .cat-label { font-size: 0.6rem; padding: 8px 2px; }
     .sat-header strong { font-size: 0.75rem; }
-    #header-sat { padding: 10px 2px; top: 90px; }
-    #header-sat.shrunk { top: 80px; }
+    #header-sat { padding: 10px 2px; }
 }
 
 @media screen and (max-width: 900px) and (orientation: portrait) {
     #landscape-message { display: flex; }
     #game-container { display: none; }
+}
+
+/* Très petits écrans (smartphones en paysage) */
+@media screen and (max-width: 768px) {
+    #score-panel {
+        padding: 8px;
+        gap: 6px;
+        top: 5px;
+    }
+    
+    .score-label {
+        font-size: 0.65rem;
+    }
+    
+    .score-value {
+        font-size: 1rem;
+    }
+    
+    #header-sat {
+        top: 140px;
+        padding: 8px 2px;
+    }
+    
+    #header-sat.shrunk {
+        top: 130px;
+    }
 }
