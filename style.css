@@ -1,86 +1,98 @@
-/* --- CONFIGURATION GLOBALE --- */
 body { 
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-    background: #f8fafc; margin: 0; padding: 20px; overflow-x: hidden;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+    background: #f1f5f9; margin: 0; padding: 0 20px 60px 20px; color: #1e293b;
 }
 
-#game-container { max-width: 1300px; margin: auto; }
+#game-container { max-width: 1400px; margin: auto; }
 
-/* --- OVERLAY ROTATION --- */
+/* --- HEADER SAT STICKY --- */
+#header-sat {
+    display: grid; 
+    grid-template-columns: 130px repeat(5, 1fr);
+    gap: 12px; padding: 20px 10px;
+    position: sticky; top: 0; z-index: 1000;
+    background: #f1f5f9; transition: all 0.3s ease;
+}
+
+#header-sat.shrunk {
+    padding: 8px 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+#header-sat.shrunk .sat-header { transform: scale(0.85); margin: -5px 0; }
+#header-sat.shrunk .desc { display: none; }
+
+/* --- PLATEAU DE JEU --- */
+.board-row {
+    display: grid; 
+    grid-template-columns: 130px repeat(5, 1fr);
+    gap: 12px; margin-bottom: 15px; padding: 12px; 
+    background: white; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    align-items: center;
+}
+
+.cat-label {
+    padding: 10px; color: white; font-weight: bold; border-radius: 8px;
+    text-align: center; font-size: 0.75rem; text-transform: uppercase;
+}
+
+.sat-header { 
+    background: #1e3a8a; color: white; border-radius: 8px; padding: 10px;
+    text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.sat-header strong { font-size: 0.85rem; display: block; }
+.sat-header .desc { font-size: 0.65rem; opacity: 0.9; margin-top: 4px; }
+
+/* --- CARTES ET ZONES --- */
+.dropzone { 
+    aspect-ratio: 1/1; border: 2px dashed #cbd5e1; border-radius: 8px;
+    background: #f8fafc; display: flex; align-items: center; justify-content: center;
+}
+
+.draggable-card { 
+    aspect-ratio: 1/1; width: 100%; background: white; border: 2px solid #e2e8f0; 
+    border-radius: 8px; cursor: grab; padding: 8px; box-sizing: border-box;
+    display: flex; align-items: center; justify-content: center; position: relative;
+}
+
+.card-text { 
+    font-size: clamp(0.55rem, 0.8vw, 0.72rem); line-height: 1.2; 
+    font-weight: 600; text-align: center;
+}
+
+/* Couleurs de texte extraites de la photo */
+.text-red { color: #b91c1c; }
+.text-blue { color: #1d4ed8; }
+.text-orange { color: #c2410c; }
+.text-violet { color: #7e22ce; }
+.text-black { color: #0f172a; }
+
+/* Feedback visuel */
+.correct { border: 4px solid #22c55e !important; background: #f0fdf4 !important; }
+.wrong { border: 4px solid #ef4444 !important; background: #fef2f2 !important; }
+
+.btn-trash {
+    position: absolute; top: -8px; right: -8px; background: #ef4444; color: white;
+    border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer;
+    display: none; font-weight: bold; z-index: 10;
+}
+.dropzone .draggable-card.wrong .btn-trash { display: flex; align-items: center; justify-content: center; }
+
+/* --- PIOCHE --- */
+#deck {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px; padding: 30px; background: #cbd5e1; border-radius: 15px; margin-top: 30px;
+}
+
+.card-img { width: 90%; height: 90%; object-fit: contain; }
+
+/* --- RESPONSIVE LANDSCAPE --- */
 #landscape-message {
-    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: #1e3a8a; color: white; z-index: 10000;
-    flex-direction: column; justify-content: center; align-items: center; text-align: center;
+    display: none; position: fixed; inset: 0; background: #1e3a8a; color: white;
+    z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
 }
 
-@media screen and (max-width: 950px) and (orientation: portrait) {
+@media screen and (max-width: 900px) and (orientation: portrait) {
     #landscape-message { display: flex; }
     #game-container { display: none; }
 }
-
-/* --- STRUCTURE PLATEAU --- */
-#header-sat, .board-row {
-    display: grid; grid-template-columns: 100px repeat(5, 1fr); /* Largeur augmentée pour le label */
-    gap: 12px; margin-bottom: 12px; padding: 10px; align-items: center;
-}
-
-.card-box, .draggable-card, .dropzone, .sat-header {
-    aspect-ratio: 1 / 1; width: 100%; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; text-align: center;
-    padding: 10px; box-sizing: border-box; border-radius: 8px; position: relative; overflow: hidden;
-}
-
-/* LIGNE SAT (HAUT) */
-.sat-header { 
-    background: #1e3a8a; color: white !important; font-weight: bold; transform: scale(0.85); 
-}
-.sat-header .desc { font-size: 0.7rem; opacity: 0.9; margin-top: 5px; color: white !important;}
-
-/* CARTES ET DROPZONES */
-.dropzone { border: 2px dashed #cbd5e1; background: rgba(255, 255, 255, 0.4); }
-.draggable-card { background: white; border: 2px solid #cbd5e1; cursor: grab; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
-/* CLASSES DE COULEUR DU JSON */
-.draggable-card p { margin: 0; font-size: clamp(0.55rem, 0.85vw, 0.75rem); line-height: 1.2; font-weight: 500; }
-.p-green { color: #15803d; }
-.p-red { color: #b91c1c; }
-.p-blue { color: #1d4ed8; }
-.p-orange { color: #c2410c; }
-.p-black { color: #000000; }
-.p-violet { color: #7e22ce; }
-
-.card-img { width: 100%; height: 100%; object-fit: contain; }
-
-/* VALIDATION */
-.correct { border: 5px solid #22c55e !important; background: #f0fdf4 !important; }
-.wrong { border: 5px solid #ef4444 !important; background: #fef2f2 !important; }
-
-/* BOUTON SUPPRIMER */
-.btn-trash {
-    position: absolute; top: 5px; right: 5px; background: #ef4444; color: white;
-    border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer;
-    font-weight: bold; display: none; z-index: 10; align-items: center; justify-content: center;
-}
-.dropzone .draggable-card .btn-trash { display: flex; }
-#deck .btn-trash { display: none !important; }
-
-/* LABELS GAUCHE MODIFIÉS */
-.cat-label {
-    min-width: 45px; 
-    padding: 5px 10px; 
-    height: 45px; 
-    display: flex; justify-content: center; align-items: center;
-    color: white; font-weight: bold; border-radius: 25px; 
-    font-size: 0.8rem; /* Un peu plus petit pour "Localisation" */
-    text-transform: uppercase;
-    box-sizing: border-box;
-}
-.cat-label.spacer { background: transparent; }
-
-/* PIOCHE */
-#deck {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px; padding: 20px; background: #e2e8f0; border-radius: 15px; margin-top: 25px;
-}
-
-.board-row.locked { opacity: 1; pointer-events: none; background-color: #f1f5f9 !important; }

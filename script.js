@@ -1,94 +1,83 @@
-const JSONContent = {
-    C6 : "<p class='p-green'>Partout, plus prononcé en altitude. Actif pendant la chute, s’atténue rapidement.</p>",
-    C7 : "<p class='p-green'>Distribution très variable souvent prêt des crêtes. Situation plus active pendant l’épisode de transport.</p>",
-    C8 : "<p class='p-green'>Couche fragile souvent répandue en versants froids. Rupture facile aux points de moindre épaisseur.Instabilité durable.</p>",
-    C9 : "<p class='p-green'>Toutes orientation si pluie (pire en versant froid), perte de stabilité très rapide.Dépend de l’orientation et de l’altitude.</p>",
-    C10: "<p class='p-green'>Sur sols lisses ou humides. Toutes orientations mais plus fréquent en orientation ensoleillées.</p>",
-    C11: "<p class='p-red'>Départs spontanés sans lien direct avec la météo. Glissement rapide par perte de friction à l’interface neige-sol.</p>",
-    C12: "<p class='p-red'>Même par météo « neutre » un pratiquant peut rompre une C. F. persistante et provoquer un déclenchement.</p>",
-    C13: "<p class='p-red'>Déstabilisation due à l’apport d’eau (pluie ou fonte).Déclenchement d’une C.F. existante ou d’une interface ou l’eau s’est accumulée.</p>",
-    C14: "<p class='p-red'>Le transport surcharge une couche fragile.La neige récente transportée prend de la cohésion (déclenchement facile).</p>",
-    C15: "<p class='p-red'>Surcharge sur couche fragile ou formé pendant la chute.</p>",
-    C16: "<p class='p-blue'>Quantité critique de neige fraiche.Activité avalancheuse en cours.</p>",
-    C17: "<p class='p-blue'>Signes de transports de neige, d’érosion ou d’accumulation. Fissures, déclenchement de plaques dures ou friables.</p>",
-    C18: "<p class='p-blue'>Pluie sur neige fraiche : activité avalancheuse spontanée forte.Escargots au début des purgesEnfoncement en profondeur.</p>",
-    C19: "<p class='p-blue'>Se méfier des versants froids et à faibles enneigement. Whoums, fissures sous les skis, déclenchements à distance.</p>",
-    C20: "<p class='p-blue'>Souvent présence de fissures et reptations. Manteau neigeux homogène.</p>",
-    C21: "<p class='p-orange'>Quand les fissures de glissement sont apparues ? Butée en pied de pente ?</p>",
-    C22: "<p class='p-orange'>Profondeur et distribution de la couche Fragile ?Historique et observations du manteau (sondages tests) ?</p>",
-    C23: "<p class='p-orange'>Depuis quand ? Première humidification ? Profondeur humidification ? Evolution à court therme ?</p>",
-    C24: "<p class='p-orange'>Age de la neige venté ? Distribution dans la pente ?Force du vent ?</p>",
-    C25: "<p class='p-orange'>Vent en cours ? Variation de T° ? Couche de surface avant la chute ?</p>",
-    C26: "<p class='p-black'>Attention à la visibilité et pentes dominantes.Patienter 1 à 3 jours.</p>",
-    C27: "<p class='p-black'>Tracé judicieux. Evitement surtout les terrains accumulés et raides (dès prépa avec le BERA et sur le terrain).</p>",
-    C28: "<p class='p-black'>S’éloigner des versants froids si pluie forte lors de la 1ere humidification.Soleil : jouer avec orientation et horaire.</p>",
-    C29: "<p class='p-black'>Comportement défensif, au pied et à distance des pentes. Complexe, peu de signaux de surfaceInfos BERA, profils- tests.</p>",
-    C30: "<p class='p-black'>Contournement si possible. Très difficile à prévoir et à déclencher. Gestion identique aux séracs.</p>",
-    C31: "<p class='p-violet'>Avalanches de plaque sèche friable ou de neige sans cohésion. Départ spontanés ou provoqué.</p>",
-    C32: "<p class='p-violet'>Avalanches de plaque sèche friable ou dure. Départs spontanés et déclenchements provoqués possibles.</p>",
-    C33: "<p class='p-violet'>Avalanches de plaque sèche. Déclenchements provoqués.Déclenchement à distance possible Grandes propagation fréquentes.</p>",
-    C34: "<p class='p-violet'>Avalanches de plaque de neige humide ou de neige mouillé sans cohésionPrincipalement départs spontanés.</p>",
-    C35: "<p class='p-violet'>Avalanche de neige sèche ou humide toujours spontanéesDéclenchements humains et artificiels très peu probables.</p>"
-};
-
-// --- CONFIGURATION DES NOMS DE CATÉGORIES ---
-const categoryNames = ["Localisation", "C2", "C3", "C4", "C5", "C6", "S"];
-
-const satHeaders = [
-    { titre: "Neige fraîche", sat: 1, desc: "Surcharge chute de neige" },
-    { titre: "Neige ventée", sat: 2, desc: "Accumulations plaques" },
-    { titre: "C.F. persistante", sat: 3, desc: "Couche fragile invisible" },
-    { titre: "Neige mouillée", sat: 4, desc: "Réchauffement ou pluie" },
-    { titre: "Neige glissante", sat: 5, desc: "Glissement sur le sol" }
+// Données extraites de la photo (Mapping ligne par ligne)
+const JSONContent = [
+    // LIGNE : Localisation (2ème ligne sur la photo)
+    ["Partout, plus prononcé en altitude. Actif pendant la chute, s’atténue rapidement.", "Distribution très variable souvent prêt des crêtes. Situation plus active pendant l’épisode de transport.", "Toutes orientation si pluie (pire en versant froid), perte de stabilité très rapide. Dépend de l’orientation et de l’altitude.", "Couche fragile souvent répandue en versants froids. Rupture facile aux points de moindre épaisseur. Instabilité durable.", "Sur sols lisses ou humides. Toutes orientations mais plus fréquent en orientation ensoleillées."],
+    
+    // LIGNE : Déclenchement (1ère ligne sur la photo)
+    ["Surcharge sur couche fragile ou formé pendant la chute.", "Le transport surcharge une couche fragile. La neige récente transportée prend de la cohésion (déclenchement facile).", "Déstabilisation due à l’apport d’eau (pluie ou fonte). Déclenchement d’une C.F. existante ou d’une interface ou l’eau s’est accumulée.", "Même par météo « neutre » un pratiquant peut rompre une C. F. persistante et provoquer un déclenchement.", "Départs spontanés sans lien direct avec la météo. Glissement rapide par perte de friction à l’interface neige-sol."],
+    
+    // LIGNE : Indices
+    ["Quantité critique de neige fraiche. Activité avalancheuse en cours.", "Signes de transports de neige, d’érosion ou d’accumulation. Fissures, déclenchement de plaques dures ou friables.", "Pluie sur neige fraiche : activité avalancheuse spontanée forte. Escargots au début des purges. Enfoncement en profondeur.", "Se méfier des versants froids et à faibles enneigement. Whoums, fissures sous les skis, déclenchements à distance.", "Souvent présence de fissures et reptations. Manteau neigeux homogène."],
+    
+    // LIGNE : Questions
+    ["Vent en cours ? Variation de T° ? Couche de surface avant la chute ?", "Age de la neige ventée ? Distribution dans la pente ? Force du vent ?", "Depuis quand ? Première humidification ? Profondeur humidification ? Evolution à court terme ?", "Profondeur et distribution de la couche Fragile ? Historique et observations du manteau (sondages tests) ?", "Quand les fissures de glissement sont apparues ? Butée en pied de pente ?"],
+    
+    // LIGNE : Type d'avalanche
+    ["Avalanches de plaque sèche friable ou de neige sans cohésion. Départ spontané ou provoqué.", "Avalanches de plaque sèche friable ou dure. Départs spontanés et déclenchements provoqués possibles.", "Avalanches de plaque de neige humide ou de neige mouillée sans cohésion. Principalement départs spontanés.", "Avalanches de plaque sèche. Déclenchements provoqués. Déclenchement à distance possible. Grandes propagations fréquentes.", "Avalanche de neige sèche ou humide toujours spontanée. Déclenchements humains et artificiels très peu probables."],
+    
+    // LIGNE : Conseils / Gestion
+    ["Attention à la visibilité et pentes dominantes. Patienter 1 à 3 jours.", "Tracé judicieux. Evitement surtout les terrains accumulés et raides (dès prépa avec le BERA et sur le terrain).", "S’éloigner des versants froids si pluie forte lors de la 1ere humidification. Soleil : jouer avec orientation et horaire.", "Comportement défensif, au pied et à distance des pentes. Complexe, peu de signaux de surface. Infos BERA, profils-tests.", "Contournement si possible. Très difficile à prévoir et à déclencher. Gestion identique aux séracs."]
 ];
 
-const rowColors = ["#15803d", "#b91c1c", "#1d4ed8", "#c2410c", "#000000", "#7e22ce", "#64748b"];
+const categoryNames = ["Localisation", "Déclenchement", "Indices", "Questions", "Type", "Conseils", "Schémas"];
+const rowColors = ["#475569", "#b91c1c", "#1d4ed8", "#c2410c", "#7e22ce", "#0f172a", "#64748b"];
+const textClasses = ["text-black", "text-red", "text-blue", "text-orange", "text-violet", "text-black", "text-black"];
+
+const satHeaders = [
+    { titre: "Neige fraîche", sat: 1, desc: "Surcharge chute" },
+    { titre: "Neige ventée", sat: 2, desc: "Accumulations" },
+    { titre: "Neige humide", sat: 3, desc: "Pluie / Fonte" },
+    { titre: "S.C. Fragile Persistante", sat: 4, desc: "Instabilité structurelle" },
+    { titre: "Avalanches de fond", sat: 5, desc: "Glissement sur le sol" }
+];
 
 let cardsData = [];
-let cardIdCounter = 6;
+let currentStep = 0;
 
-for (let line = 0; line < 6; line++) {
-    for (let sat = 1; sat <= 5; sat++) {
-        let key = `C${cardIdCounter}`;
+// Préparation des cartes texte
+JSONContent.forEach((row, lineIdx) => {
+    row.forEach((text, colIdx) => {
         cardsData.push({
-            id: cardIdCounter,
-            sat: sat,
-            line: line,
-            color: rowColors[line],
-            html: JSONContent[key]
+            id: `card-${lineIdx}-${colIdx}`,
+            sat: colIdx + 1,
+            line: lineIdx,
+            color: rowColors[lineIdx],
+            text: text,
+            class: textClasses[lineIdx]
         });
-        cardIdCounter++;
-    }
-}
+    });
+});
 
-const schemaNames = ["fraiche", "ventee", "persistante", "mouillee", "glissante"];
-for (let sat = 1; sat <= 5; sat++) {
+// Ajout des schémas (images) à la fin
+const schemaNames = ["fraiche", "ventee", "mouillee", "persistante", "glissante"];
+schemaNames.forEach((name, idx) => {
     cardsData.push({
-        id: cardIdCounter,
-        sat: sat,
+        id: `img-${idx}`,
+        sat: idx + 1,
         line: 6,
         color: rowColors[6],
-        image: `img/${schemaNames[sat-1]}.png`
+        image: `img/${name}.png`
     });
-    cardIdCounter++;
-}
-
-let currentStep = 0;
+});
 
 function initGame() {
     const headerRow = document.getElementById('header-sat');
-    const spacer = document.createElement('div');
-    spacer.className = 'cat-label spacer';
-    headerRow.appendChild(spacer);
-
+    headerRow.innerHTML = '<div class="cat-label spacer"></div>';
     satHeaders.forEach(sat => {
         const div = document.createElement('div');
-        div.className = 'card-box sat-header';
+        div.className = 'sat-header';
         div.innerHTML = `<strong>${sat.titre}</strong><div class="desc">${sat.desc}</div>`;
         headerRow.appendChild(div);
     });
     startNextStep();
 }
+
+// Gestion du scroll pour le header
+window.addEventListener('scroll', () => {
+    const header = document.getElementById('header-sat');
+    if (window.scrollY > 50) header.classList.add('shrunk');
+    else header.classList.remove('shrunk');
+});
 
 function startNextStep() {
     if (currentStep >= 7) return;
@@ -100,7 +89,8 @@ function updateDeck(lineIndex) {
     const deck = document.getElementById('deck');
     deck.innerHTML = ""; 
     const stepCards = cardsData.filter(c => c.line === lineIndex);
-    shuffleArray(stepCards);
+    // Mélange
+    stepCards.sort(() => Math.random() - 0.5);
     stepCards.forEach(card => deck.appendChild(createCardElement(card)));
 }
 
@@ -108,14 +98,14 @@ function createCardElement(card) {
     const cardEl = document.createElement('div');
     cardEl.className = 'draggable-card';
     cardEl.draggable = true;
-    cardEl.id = `card-${card.id}`;
+    cardEl.id = card.id;
     cardEl.dataset.sat = card.sat;
     cardEl.style.borderColor = card.color;
 
     if (card.image) {
         cardEl.innerHTML = `<img src="${card.image}" class="card-img">`;
     } else {
-        cardEl.innerHTML = card.html;
+        cardEl.innerHTML = `<div class="card-text ${card.class}">${card.text}</div>`;
     }
 
     const btnTrash = document.createElement('button');
@@ -133,13 +123,11 @@ function addNewRow(index) {
     const rowDiv = document.createElement('div');
     const color = rowColors[index];
     rowDiv.className = `board-row active row-${index}`;
-    rowDiv.style.backgroundColor = `${color}08`; 
-    rowDiv.style.borderColor = color;
+    rowDiv.style.borderLeft = `6px solid ${color}`;
     
     const catLabel = document.createElement('div');
     catLabel.className = 'cat-label';
     catLabel.style.backgroundColor = color;
-    // Utilisation du nom de catégorie défini plus haut
     catLabel.innerText = categoryNames[index];
     rowDiv.appendChild(catLabel);
 
@@ -152,6 +140,7 @@ function addNewRow(index) {
         rowDiv.appendChild(zone);
     }
     board.appendChild(rowDiv);
+    rowDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function handleDrop(e) {
@@ -170,22 +159,17 @@ function handleDrop(e) {
 }
 
 function validateCard(card, zone) {
-    const trash = card.querySelector('.btn-trash');
     if (card.dataset.sat == zone.dataset.colSat) {
         card.classList.add('correct');
         card.classList.remove('wrong');
-        if (trash) trash.style.display = 'none';
     } else {
         card.classList.add('wrong');
         card.classList.remove('correct');
-        if (trash) trash.style.display = 'flex';
     }
 }
 
 function moveToDeck(cardEl) {
     cardEl.classList.remove('correct', 'wrong');
-    const trash = cardEl.querySelector('.btn-trash');
-    if (trash) trash.style.display = 'none';
     document.getElementById('deck').appendChild(cardEl);
 }
 
@@ -193,16 +177,8 @@ function checkRowStatus(row) {
     const correctCards = row.querySelectorAll('.draggable-card.correct');
     if (correctCards.length === 5) {
         row.classList.replace('active', 'locked');
-        row.querySelectorAll('.btn-trash').forEach(b => b.remove());
         currentStep++;
         setTimeout(startNextStep, 600);
-    }
-}
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
