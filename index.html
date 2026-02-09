@@ -3,23 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jeu SAT - Avalanche</title>
+    <meta name="description" content="Jeu éducatif pour apprendre les Situations Avalancheuses Typiques (SAT)">
+    <title>Jeu SAT - Situations Avalancheuses Typiques</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Message rotation mobile -->
     <div id="landscape-message">
         <div class="message-content">
-            <div class="icon-rotate">🔄</div>
+            <div class="icon-rotate">↻</div>
             <h2>Mode Paysage Requis</h2>
-            <p>Veuillez faire pivoter votre appareil pour jouer au mieux.</p>
+            <p>Veuillez faire pivoter votre appareil en mode paysage pour une meilleure expérience de jeu.</p>
         </div>
     </div>
 
+    <!-- Conteneur principal du jeu -->
     <div id="game-container">
+        <!-- Panneau de score (généré dynamiquement) -->
+        
+        <!-- En-têtes des colonnes SAT (sticky) -->
         <div id="header-sat"></div>
         
+        <!-- Plateau de jeu avec les lignes -->
         <div id="game-board"></div>
         
+        <!-- Deck de cartes à placer -->
         <div id="deck"></div>
     </div>
 

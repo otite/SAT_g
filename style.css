@@ -9,12 +9,47 @@ body {
     margin: 0; 
     padding: 0 15px 100px 15px; 
     color: #1e293b;
-    /* Important pour le sticky mobile : ne pas mettre d'overflow hidden ici */
 }
 
 #game-container { 
     max-width: 1600px; 
     margin: auto; 
+}
+
+/* --- PANNEAU DE SCORE --- */
+#score-panel {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    position: sticky;
+    top: 10px;
+    z-index: 1000;
+}
+
+.score-item {
+    text-align: center;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.score-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.score-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
 }
 
 /* --- HEADER SAT FLOTTANT (Sticky) --- */
@@ -24,11 +59,10 @@ body {
     gap: 5px;
     padding: 20px 5px;
     
-    /* Correction Sticky Mobile & Safari */
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
-    z-index: 2000; 
+    top: 120px;
+    z-index: 999; 
     
     background: #f1f5f9; 
     border-bottom: 2px solid #cbd5e1;
@@ -38,6 +72,7 @@ body {
 #header-sat.shrunk {
     padding: 8px 5px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    top: 110px;
 }
 
 #header-sat.shrunk .sat-header { transform: scale(0.9); }
@@ -54,6 +89,12 @@ body {
     border-radius: 12px; 
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+.board-row.locked {
+    opacity: 0.7;
+    pointer-events: none;
 }
 
 .cat-label {
@@ -72,11 +113,12 @@ body {
     border-radius: 8px; 
     padding: 12px 5px;
     text-align: center;
+    transition: transform 0.2s ease;
 }
 .sat-header strong { font-size: 0.95rem; display: block; }
 .sat-header .desc { font-size: 0.7rem; opacity: 0.9; margin-top: 4px; }
 
-/* --- CARTES : TEXTE GROSSI --- */
+/* --- CARTES --- */
 .dropzone { 
     aspect-ratio: 1/1; 
     border: 2px dashed #cbd5e1; 
@@ -85,6 +127,12 @@ body {
     display: flex; 
     align-items: center; 
     justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.dropzone:hover {
+    background: #e0e7ff;
+    border-color: #818cf8;
 }
 
 .draggable-card { 
@@ -100,31 +148,30 @@ body {
     align-items: center; 
     justify-content: center; 
     position: relative;
-    transition: transform 0.2s;
+    transition: all 0.2s ease;
+    touch-action: none;
+}
+
+.draggable-card:active {
+    cursor: grabbing;
+}
+
+.draggable-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.draggable-card.dragging-touch {
+    z-index: 1000;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    transform: scale(1.05);
 }
 
 .card-text { 
-    /* Texte agrandi pour Desktop */
     font-size: 1rem; 
     line-height: 1.3; 
     font-weight: 700; 
     text-align: center;
-}
-
-/* --- RESPONSIVE MOBILE --- */
-@media screen and (max-width: 1024px) {
-    #header-sat, .board-row {
-        grid-template-columns: 90px repeat(5, 1fr);
-        gap: 6px;
-    }
-    #deck{
-        display:flex !important;
-
-    }
-    .card-text { font-size: 0.65rem; }
-    .cat-label { font-size: 0.6rem; padding: 8px 2px; }
-    .sat-header strong { font-size: 0.75rem; }
-    #header-sat { padding: 10px 2px; }
 }
 
 /* Couleurs de texte */
@@ -134,9 +181,20 @@ body {
 .text-violet { color: #7e22ce; }
 .text-black { color: #0f172a; }
 
-.correct { border: 5px solid #22c55e !important; background: #f0fdf4 !important; }
-.wrong { border: 5px solid #ef4444 !important; background: #fef2f2 !important; }
+/* États de validation */
+.correct { 
+    border: 5px solid #22c55e !important; 
+    background: #f0fdf4 !important;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
 
+.wrong { 
+    border: 5px solid #ef4444 !important; 
+    background: #fef2f2 !important;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+/* --- DECK DE CARTES --- */
 #deck {
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -145,22 +203,216 @@ body {
     background: #cbd5e1; 
     border-radius: 15px; 
     margin-top: 30px;
+    min-height: 200px;
 }
 
-.card-img { width: 95%; height: 95%; object-fit: contain; }
+.card-img { 
+    width: 95%; 
+    height: 95%; 
+    object-fit: contain; 
+}
 
+/* --- BOUTON SUPPRESSION --- */
 .btn-trash {
-    position: absolute; top: -10px; right: -10px; 
-    background: #ef4444; color: white; border: none; 
-    border-radius: 50%; width: 26px; height: 26px; 
-    cursor: pointer; display: none; font-weight: bold;
+    position: absolute; 
+    top: -10px; 
+    right: -10px; 
+    background: #ef4444; 
+    color: white; 
+    border: none; 
+    border-radius: 50%; 
+    width: 26px; 
+    height: 26px; 
+    cursor: pointer; 
+    display: none; 
+    font-weight: bold;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
-.draggable-card.wrong .btn-trash { display: flex; align-items: center; justify-content: center; }
 
-#landscape-message {
-    display: none; position: fixed; inset: 0; background: #1e3a8a; color: white;
-    z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
+.btn-trash:hover {
+    background: #dc2626;
+    transform: scale(1.1);
 }
+
+.draggable-card.wrong .btn-trash { 
+    display: flex; 
+}
+
+/* --- ANIMATIONS --- */
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+@keyframes rowComplete {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); background: #f0fdf4; }
+    100% { transform: scale(1); }
+}
+
+/* --- MODAL VICTOIRE --- */
+#victory-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 500px;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h2 {
+    font-size: 2rem;
+    margin: 0 0 20px 0;
+    color: #1e3a8a;
+}
+
+.final-stats {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.final-stats p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+.btn-restart {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-restart:hover {
+    background: #1e40af;
+    transform: scale(1.05);
+}
+
+/* --- CONFETTIS --- */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    z-index: 9999;
+    animation: confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* --- MESSAGE PAYSAGE MOBILE --- */
+#landscape-message {
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    z-index: 9999; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.message-content {
+    max-width: 400px;
+}
+
+.icon-rotate {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: rotate 2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+}
+
+#landscape-message h2 {
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media screen and (max-width: 1024px) {
+    #header-sat, .board-row {
+        grid-template-columns: 90px repeat(5, 1fr);
+        gap: 6px;
+    }
+    
+    #score-panel {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 10px;
+    }
+    
+    .score-value {
+        font-size: 1.2rem;
+    }
+    
+    #deck {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    #deck .draggable-card {
+        width: 120px;
+        height: 120px;
+        flex-shrink: 0;
+    }
+    
+    .card-text { font-size: 0.65rem; }
+    .cat-label { font-size: 0.6rem; padding: 8px 2px; }
+    .sat-header strong { font-size: 0.75rem; }
+    #header-sat { padding: 10px 2px; top: 90px; }
+    #header-sat.shrunk { top: 80px; }
+}
+
 @media screen and (max-width: 900px) and (orientation: portrait) {
     #landscape-message { display: flex; }
     #game-container { display: none; }
