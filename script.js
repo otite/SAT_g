@@ -36,8 +36,9 @@ let cardsData = [];
 let currentStep = 0;
 let gameStartTime = null;
 let gameEndTime = null;
-let moves = 0;  // Compte les mouvements au lieu des erreurs
-let cardsPlaced = 0;
+let validationAttempts = 0;  // Nombre total de clics "Valider"
+let failedValidations = 0;   // Nombre de tentatives échouées (ligne incomplète)
+let cardsPlaced = 0;         // Lignes complètes × 5
 
 // Sons
 const sounds = {
@@ -136,7 +137,7 @@ function createScorePanel() {
             <span class="score-value" id="cards-count">0/35</span>
         </div>
         <div class="score-item">
-            <span class="score-label">🔄 Coups</span>
+            <span class="score-label">❌ Erreurs</span>
             <span class="score-value" id="moves-count">0</span>
         </div>
         <div class="score-item">
@@ -160,12 +161,12 @@ function updateTimer() {
 
 function updateScore() {
     document.getElementById('cards-count').textContent = `${cardsPlaced}/35`;
-    document.getElementById('moves-count').textContent = moves;
+    document.getElementById('moves-count').textContent = failedValidations;
     
-    // Calcul du score : bonus pour cartes correctes - pénalité pour mouvements excessifs
-    const timeBonus = Math.max(0, 500 - Math.floor((Date.now() - gameStartTime) / 1000));
-    const movePenalty = Math.max(0, moves - 35) * 10; // Pénalité si plus de mouvements que nécessaire
-    const score = Math.max(0, cardsPlaced * 100 + timeBonus - movePenalty);
+    // Score : base 3500 pts + bonus temps - pénalité erreurs
+    const timeBonus = Math.max(0, 1000 - Math.floor((Date.now() - gameStartTime) / 1000));
+    const errorPenalty = failedValidations * 150;
+    const score = Math.max(0, cardsPlaced * 100 + timeBonus - errorPenalty);
     document.getElementById('score').textContent = score;
 }
 
@@ -237,16 +238,13 @@ function createCardElement(card) {
                 const targetCard = zone.firstChild;
                 
                 if (sourceZone !== zone && targetCard) {
-                    // Incrémenter le compteur de mouvements
-                    moves++;
-                    
                     // Échanger les cartes
                     sourceZone.appendChild(targetCard);
                     zone.appendChild(cardEl);
                     
-                    validateCard(cardEl, zone);
-                    validateCard(targetCard, sourceZone);
-                    checkRowStatus(activeRow);
+                    // Réinitialiser l'état visuel des cartes déplacées
+                    resetCardState(cardEl);
+                    resetCardState(targetCard);
                 }
             }
         }
@@ -262,11 +260,15 @@ function addNewRow(index) {
     rowDiv.className = `board-row active row-${index}`;
     rowDiv.style.borderLeft = `8px solid ${color}`;
     
+    const colLeft = document.createElement('div');
+    colLeft.className = 'col-left';
+    
     const catLabel = document.createElement('div');
     catLabel.className = 'cat-label';
     catLabel.style.backgroundColor = color;
     catLabel.innerText = categoryNames[index];
-    rowDiv.appendChild(catLabel);
+    colLeft.appendChild(catLabel);
+    rowDiv.appendChild(colLeft);  // ← inséré EN PREMIER dans la grille
 
     // Récupérer les cartes de cette ligne
     const stepCards = cardsData.filter(c => c.line === index);
@@ -285,13 +287,19 @@ function addNewRow(index) {
         zone.ondragover = (e) => e.preventDefault();
         zone.ondrop = handleDrop;
         
-        // Pré-remplir avec une carte mélangée
+        // Pré-remplir avec une carte mélangée (sans validation visuelle)
         const card = shuffledCards[c];
         zone.appendChild(createCardElement(card));
-        validateCard(zone.firstChild, zone, false);  // false = pas de son
         
         rowDiv.appendChild(zone);
     }
+    
+    // Bouton Valider (sous le label de catégorie)
+    const validateBtn = document.createElement('button');
+    validateBtn.className = 'btn-validate';
+    validateBtn.textContent = 'Valider ✓';
+    validateBtn.onclick = () => validateRow(rowDiv, validateBtn);
+    colLeft.appendChild(validateBtn);
     
     board.appendChild(rowDiv);
     rowDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -310,66 +318,92 @@ function handleDrop(e) {
     // Si on drop sur la même zone, ne rien faire
     if (sourceZone === zone) return;
     
-    // Incrémenter le compteur de mouvements
-    moves++;
-    
     // Échanger les cartes
     const targetCard = zone.firstChild;
     
     if (targetCard) {
-        // Échanger les deux cartes
         sourceZone.appendChild(targetCard);
         zone.appendChild(draggedCard);
-        
-        // Revalider les deux cartes
-        validateCard(draggedCard, zone);
-        validateCard(targetCard, sourceZone);
+        // Réinitialiser l'état visuel des cartes déplacées
+        resetCardState(draggedCard);
+        resetCardState(targetCard);
     } else {
-        // Cas improbable : zone vide (ne devrait pas arriver)
         zone.appendChild(draggedCard);
-        validateCard(draggedCard, zone);
+        resetCardState(draggedCard);
     }
-    
-    checkRowStatus(activeRow);
+}
+
+function resetCardState(card) {
+    card.classList.remove('correct', 'wrong');
 }
 
 function validateCard(card, zone, playSound = true) {
     const isCorrect = card.dataset.sat == zone.dataset.colSat;
     
-    const wasCorrect = card.classList.contains('correct');
-    
     if (isCorrect) {
         card.classList.add('correct');
         card.classList.remove('wrong');
-        if (!wasCorrect) cardsPlaced++;
         if (playSound) {
             sounds.play('correct');
-            // Animation de succès
             card.style.animation = 'pop 0.3s ease';
             setTimeout(() => card.style.animation = '', 300);
         }
     } else {
-        if (wasCorrect) cardsPlaced--;
         card.classList.add('wrong');
         card.classList.remove('correct');
         if (playSound) {
             sounds.play('wrong');
-            // Vibration mobile
             if (navigator.vibrate) navigator.vibrate(100);
-            // Animation d'erreur
             card.style.animation = 'shake 0.3s ease';
             setTimeout(() => card.style.animation = '', 300);
         }
     }
     
-    updateScore();
+    return isCorrect;
 }
 
-function checkRowStatus(row) {
+function validateRow(rowDiv, btn) {
+    validationAttempts++;
+    
+    const zones = rowDiv.querySelectorAll('.dropzone');
+    let correctCount = 0;
+    
+    zones.forEach(zone => {
+        const card = zone.firstChild;
+        if (card) {
+            const isCorrect = validateCard(card, zone, false);
+            if (isCorrect) correctCount++;
+        }
+    });
+    
+    // Jouer un son groupé selon le résultat
+    if (correctCount === 5) {
+        sounds.play('complete');
+        cardsPlaced += 5;
+        updateScore();
+        checkRowStatus(rowDiv, btn);
+    } else {
+        // Tentative échouée
+        failedValidations++;
+        sounds.play('wrong');
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        updateScore();
+        
+        // Afficher le nombre de bonnes réponses sur le bouton
+        btn.textContent = `Valider ✓ (${correctCount}/5 ✓)`;
+        btn.style.background = '#ef4444';
+        setTimeout(() => {
+            btn.textContent = 'Valider ✓';
+            btn.style.background = '';
+        }, 2000);
+    }
+}
+
+function checkRowStatus(row, btn) {
     const correctCards = row.querySelectorAll('.draggable-card.correct');
     if (correctCards.length === 5) {
         row.classList.replace('active', 'locked');
-        sounds.play('complete');
+        if (btn) btn.remove();
         
         // Animation de ligne complète
         row.style.animation = 'rowComplete 0.5s ease';
@@ -391,7 +425,8 @@ function endGame() {
             <h2>🏔️ Bravo ! Jeu terminé ! 🏔️</h2>
             <div class="final-stats">
                 <p><strong>⏱️ Temps total :</strong> ${Math.floor(totalTime / 60)}:${(totalTime % 60).toString().padStart(2, '0')}</p>
-                <p><strong>🔄 Nombre de coups :</strong> ${moves}</p>
+                <p><strong>🔄 Tentatives de validation :</strong> ${validationAttempts}</p>
+                <p><strong>❌ Erreurs de validation :</strong> ${failedValidations}</p>
                 <p><strong>📊 Score final :</strong> ${document.getElementById('score').textContent}</p>
             </div>
             <button onclick="location.reload()" class="btn-restart">Rejouer</button>
