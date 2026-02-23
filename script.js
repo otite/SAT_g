@@ -200,7 +200,13 @@ function createCardElement(card) {
     }
 
     // Desktop: drag & drop
-    cardEl.ondragstart = (e) => e.dataTransfer.setData('text', e.target.id);
+    cardEl.ondragstart = (e) => {
+        e.dataTransfer.setData('text', e.target.closest('.draggable-card').id);
+    };
+    // La carte remplit entièrement la dropzone : on doit aussi écouter dragover/drop
+    // sur la carte elle-même, sinon les drops "vers la gauche" sont refusés
+    cardEl.ondragover = (e) => e.preventDefault();
+    cardEl.ondrop = handleDrop;
     
     // Mobile: touch events améliorés
     let touchStartX, touchStartY, isDragging = false;
