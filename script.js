@@ -203,10 +203,9 @@ function createCardElement(card) {
     cardEl.ondragstart = (e) => {
         e.dataTransfer.setData('text', e.target.closest('.draggable-card').id);
     };
-    // La carte remplit entièrement la dropzone : on doit aussi écouter dragover/drop
-    // sur la carte elle-même, sinon les drops "vers la gauche" sont refusés
+    // ondragover sur la carte pour accepter le drop quand le curseur arrive
+    // directement dessus — le drop lui-même bubble vers la .dropzone parente
     cardEl.ondragover = (e) => e.preventDefault();
-    cardEl.ondrop = handleDrop;
     
     // Mobile: touch events améliorés
     let touchStartX, touchStartY, isDragging = false;
@@ -234,7 +233,13 @@ function createCardElement(card) {
         cardEl.style.opacity = '';
         
         const touch = e.changedTouches[0];
+        
+        // Masquer temporairement la carte pour que elementFromPoint
+        // détecte la zone EN DESSOUS et non la carte elle-même
+        cardEl.style.visibility = 'hidden';
         const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+        cardEl.style.visibility = '';
+        
         const zone = dropTarget?.closest('.dropzone');
         
         if (zone) {
