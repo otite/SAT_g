@@ -234,11 +234,11 @@ function createCardElement(card) {
         
         const touch = e.changedTouches[0];
         
-        // Masquer temporairement la carte pour que elementFromPoint
-        // détecte la zone EN DESSOUS et non la carte elle-même
-        cardEl.style.visibility = 'hidden';
+        // pointer-events: none exclut la carte du hit-testing de elementFromPoint
+        // (visibility:hidden n'est pas fiable sur tous les navigateurs mobiles)
+        cardEl.style.pointerEvents = 'none';
         const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-        cardEl.style.visibility = '';
+        cardEl.style.pointerEvents = '';
         
         const zone = dropTarget?.closest('.dropzone');
         
