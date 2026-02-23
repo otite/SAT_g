@@ -308,7 +308,7 @@ function addNewRow(index) {
     // Bouton Valider (sous le label de catégorie)
     const validateBtn = document.createElement('button');
     validateBtn.className = 'btn-validate';
-    validateBtn.textContent = 'Valider ✓';
+    validateBtn.textContent = 'Valider...';
     validateBtn.onclick = () => validateRow(rowDiv, validateBtn);
     colLeft.appendChild(validateBtn);
     
@@ -401,12 +401,12 @@ function validateRow(rowDiv, btn) {
         updateScore();
         
         // Afficher le nombre de bonnes réponses sur le bouton
-        btn.textContent = `Valider ✓ (${correctCount}/5 ✓)`;
+        btn.textContent = `(${correctCount}/5 ✓)`;
         btn.style.background = '#ef4444';
         setTimeout(() => {
-            btn.textContent = 'Valider ✓';
+            btn.textContent = 'Valider...';
             btn.style.background = '';
-        }, 2000);
+        }, 500);
     }
 }
 
