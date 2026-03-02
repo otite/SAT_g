@@ -304,6 +304,30 @@ body {
     font-size: 1.1rem;
 }
 
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-review {
+    background: #d97706;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-review:hover {
+    background: #b45309;
+    transform: scale(1.05);
+}
+
 .btn-restart {
     background: #1e3a8a;
     color: white;
@@ -319,6 +343,85 @@ body {
 .btn-restart:hover {
     background: #1e40af;
     transform: scale(1.05);
+}
+
+/* --- MODE RÉVISION --- */
+#review-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 20px;
+    background: #fffbeb;
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.review-banner-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.review-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #92400e;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.review-subtitle {
+    font-size: 0.85rem;
+    color: #78350f;
+}
+
+.btn-restart-small {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-restart-small:hover {
+    background: #1e40af;
+    transform: scale(1.05);
+}
+
+.board-row.review {
+    opacity: 1;
+    pointer-events: none;
+}
+
+.had-error {
+    border: 2px solid #f59e0b !important;
+    background: #fffbeb !important;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+}
+
+.had-error::after {
+    content: '!';
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: #92400e;
+    background: #fde68a;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 /* --- CONFETTIS --- */

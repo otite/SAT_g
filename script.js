@@ -39,6 +39,7 @@ let gameEndTime = null;
 let validationAttempts = 0;  // Nombre total de clics "Valider"
 let failedValidations = 0;   // Nombre de tentatives échouées (ligne incomplète)
 let cardsPlaced = 0;         // Lignes complètes × 5
+const errorCards = new Set(); // IDs des cartes ayant causé au moins une erreur
 
 // Sons
 const sounds = {
@@ -362,6 +363,7 @@ function validateCard(card, zone, playSound = true) {
     } else {
         card.classList.add('wrong');
         card.classList.remove('correct');
+        errorCards.add(card.id);
         if (playSound) {
             sounds.play('wrong');
             if (navigator.vibrate) navigator.vibrate(100);
@@ -440,13 +442,47 @@ function endGame() {
                 <p><strong>❌ Erreurs de validation :</strong> ${failedValidations}</p>
                 <p><strong>📊 Score final :</strong> ${document.getElementById('score').textContent}</p>
             </div>
-            <button onclick="location.reload()" class="btn-restart">Rejouer</button>
+            <div class="modal-buttons">
+                <button onclick="showReview()" class="btn-review">Voir le récapitulatif</button>
+                <button onclick="location.reload()" class="btn-restart">Rejouer</button>
+            </div>
         </div>
     `;
     document.body.appendChild(modal);
     
     // Confettis animation
     createConfetti();
+}
+
+function showReview() {
+    document.getElementById('victory-modal').remove();
+
+    const n = errorCards.size;
+    const subtitle = n > 0
+        ? `${n} carte${n > 1 ? 's' : ''} t'ont posé un problème (en orange). Revois-les pour comprendre tes erreurs et progresser !`
+        : 'Aucune erreur — résultat parfait !';
+
+    const banner = document.createElement('div');
+    banner.id = 'review-banner';
+    banner.innerHTML = `
+        <div class="review-banner-text">
+            <span class="review-title">Mode révision</span>
+            <span class="review-subtitle">${subtitle}</span>
+        </div>
+        <button onclick="location.reload()" class="btn-restart-small">Rejouer</button>
+    `;
+    document.getElementById('game-container').prepend(banner);
+
+    document.querySelectorAll('.board-row.locked').forEach(row => {
+        row.classList.add('review');
+    });
+
+    errorCards.forEach(cardId => {
+        const card = document.getElementById(cardId);
+        if (card) card.classList.add('had-error');
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function createConfetti() {
