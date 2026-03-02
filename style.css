@@ -11,21 +11,48 @@ body {
     color: #1e293b;
 }
 
-#game-container { 
-    max-width: 1600px; 
-    margin: auto; 
+#game-container {
+    max-width: 1600px;
+    margin: auto;
+}
+
+/* --- TITRE DU JEU --- */
+#game-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    border-top: 3px solid #1e3a8a;
+    margin-bottom: 10px;
+}
+
+.game-title-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.game-title-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
 /* --- PANNEAU DE SCORE --- */
 #score-panel {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
     gap: 10px;
-    padding: 15px;
+    padding: 12px 15px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     position: sticky;
     top: 5px;
     z-index: 2000;
@@ -40,9 +67,45 @@ body {
 
 .score-label {
     display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.score-progress {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+.progress-track {
+    flex: 1;
+    height: 7px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+.progress-label {
     font-size: 0.75rem;
-    color: #64748b;
-    margin-bottom: 5px;
+    font-weight: 700;
+    color: #475569;
+    white-space: nowrap;
+    min-width: 72px;
+    text-align: right;
 }
 
 .score-value {
@@ -54,17 +117,17 @@ body {
 
 /* --- HEADER SAT FLOTTANT (Sticky) --- */
 #header-sat {
-    display: grid; 
+    display: grid;
     grid-template-columns: 160px repeat(5, 1fr);
     gap: 5px;
     padding: 15px 5px;
-    
+
     position: -webkit-sticky;
     position: sticky;
-    top: 90px;
-    z-index: 1500; 
-    
-    background: #f1f5f9; 
+    top: var(--score-height, 90px);
+    z-index: 1500;
+
+    background: #f1f5f9;
     border-bottom: 2px solid #cbd5e1;
     transition: all 0.3s ease;
 }
@@ -72,7 +135,7 @@ body {
 #header-sat.shrunk {
     padding: 8px 5px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    top: 100px;
+    top: var(--score-height, 90px);
 }
 
 #header-sat.shrunk .sat-header { transform: scale(0.9); }
@@ -109,16 +172,17 @@ body {
     text-transform: uppercase;
 }
 
-.sat-header { 
-    background: #1e3a8a; 
-    color: white; 
-    border-radius: 8px; 
-    padding: 12px 5px;
+.sat-header {
+    background: #1e3a8a;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 5px;
     text-align: center;
     transition: transform 0.2s ease;
 }
-.sat-header strong { font-size: 0.95rem; display: block; }
-.sat-header .desc { font-size: 0.7rem; opacity: 0.9; margin-top: 4px; }
+.sat-emoji { font-size: 1.3rem; display: block; margin-bottom: 3px; line-height: 1; }
+.sat-header strong { font-size: 0.88rem; display: block; }
+.sat-header .desc { font-size: 0.68rem; opacity: 0.85; margin-top: 3px; }
 
 /* --- CARTES --- */
 .dropzone { 
@@ -136,14 +200,14 @@ body {
     background: #e0e7ff;
 }
 
-.draggable-card { 
-    aspect-ratio: 1/1; 
-    width: 100%; 
-    background: white; 
-    border: 2px solid #e2e8f0; 
-    border-radius: 10px; 
-    cursor: grab; 
-    padding: 12px; 
+.draggable-card {
+    aspect-ratio: 1/1;
+    width: 100%;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: grab;
+    padding: 14px 10px;
     box-sizing: border-box;
     display: flex; 
     align-items: center; 
@@ -168,10 +232,10 @@ body {
     transform: scale(1.05);
 }
 
-.card-text { 
-    font-size: 1rem; 
-    line-height: 1.3; 
-    font-weight: 500; 
+.card-text {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    font-weight: 500;
     text-align: center;
     pointer-events: none;  /* ne pas intercepter les events drag/drop */
 }
@@ -256,7 +320,8 @@ body {
 }
 
 /* --- MODAL VICTOIRE --- */
-#victory-modal {
+#victory-modal,
+#intro-modal {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
@@ -264,6 +329,7 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 10000;
+    padding: 16px;
     animation: fadeIn 0.3s ease;
 }
 
@@ -277,8 +343,43 @@ body {
     padding: 40px;
     border-radius: 20px;
     text-align: center;
+    width: 100%;
     max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
     animation: slideUp 0.4s ease;
+}
+
+/* --- INTRO MODAL --- */
+.intro-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.intro-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.step-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.intro-step p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #334155;
 }
 
 @keyframes slideUp {
@@ -481,38 +582,52 @@ body {
     body {
         padding: 0 8px 30px 8px;
     }
-    
+
+    #game-header {
+        padding: 10px 12px;
+        margin-bottom: 6px;
+    }
+
+    .game-title-text { font-size: 0.8rem; }
+    .game-title-icon { font-size: 1.1rem; }
+
     #score-panel {
         grid-template-columns: repeat(4, 1fr);
-        gap: 5px;
-        padding: 8px;
+        gap: 4px 6px;
+        padding: 6px 8px;
         top: 3px;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
-    
+
     .score-item {
-        padding: 6px 3px;
+        padding: 3px 2px;
+        background: none;
+        border-radius: 0;
     }
-    
+
     .score-label {
-        font-size: 0.65rem;
-        margin-bottom: 3px;
+        font-size: 0.55rem;
+        margin-bottom: 1px;
     }
-    
+
     .score-value {
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
+
+    .score-progress { padding-top: 2px; }
+    .progress-label { font-size: 0.6rem; min-width: 56px; }
+    .progress-track { height: 4px; }
+    .sat-emoji { font-size: 0.95rem; margin-bottom: 2px; }
+    .sat-header .desc { display: none; }
     
     #header-sat {
         grid-template-columns: 90px repeat(5, 1fr);
         gap: 6px;
-        top: 80px;
         padding: 8px 2px;
         z-index: 1500;
     }
-    
+
     #header-sat.shrunk {
-        top: 70px;
         padding: 5px 2px;
     }
     
@@ -530,7 +645,9 @@ body {
     
     .card-text { font-size: 0.60rem; }
     .cat-label { font-size: 0.6rem; padding: 8px 2px; }
-    .sat-header strong { font-size: 0.75rem; }
+    .sat-header { padding: 6px 4px; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap; }
+    .sat-header strong { font-size: 0.7rem; }
+    .sat-emoji { font-size: 0.9rem; margin: 0; }
 }
 
 @media screen and (max-width: 900px) and (orientation: portrait) {
@@ -543,7 +660,52 @@ body {
     body {
         padding: 0 5px 20px 5px;
     }
-    
+
+    #game-header { display: none; }
+
+    .modal-content {
+        padding: 14px 12px;
+        border-radius: 12px;
+    }
+
+    .modal-content h2 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+
+    .final-stats {
+        padding: 8px 10px;
+        margin: 8px 0;
+    }
+
+    .final-stats p {
+        font-size: 0.78rem;
+        margin: 4px 0;
+    }
+
+    .btn-review, .btn-restart {
+        padding: 9px 14px;
+        font-size: 0.82rem;
+    }
+
+    .modal-buttons { gap: 8px; }
+
+    .intro-steps {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin: 8px 0;
+    }
+
+    .intro-step {
+        padding: 6px 8px;
+        gap: 6px;
+    }
+
+    .step-icon { font-size: 1rem; }
+
+    .intro-step p { font-size: 0.72rem; line-height: 1.35; }
+
     #score-panel {
         padding: 5px;
         gap: 3px;
@@ -565,14 +727,16 @@ body {
     }
     
     #header-sat {
-        top: 65px;
-        padding: 6px 2px;
-    }
-    
-    #header-sat.shrunk {
-        top: 55px;
         padding: 4px 2px;
     }
+
+    #header-sat.shrunk {
+        padding: 3px 2px;
+    }
+
+    .sat-header { padding: 4px 2px; gap: 2px; }
+    .sat-header strong { font-size: 0.62rem; }
+    .sat-emoji { font-size: 0.8rem; }
     
     .board-row {
         margin: 6px 0;

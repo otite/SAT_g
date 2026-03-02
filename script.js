@@ -24,11 +24,11 @@ const rowColors = ["#475569", "#b91c1c", "#1d4ed8", "#c2410c", "#7e22ce", "#0f17
 const textClasses = ["text-black", "text-red", "text-blue", "text-orange", "text-violet", "text-black", "text-black"];
 
 const satHeaders = [
-    { titre: "Neige fraîche", sat: 1, desc: "Surcharge chute" },
-    { titre: "Neige ventée", sat: 2, desc: "Accumulations" },
-    { titre: "Neige humide", sat: 3, desc: "Pluie / Fonte" },
-    { titre: "S.C. Fragile Persistante", sat: 4, desc: "Instabilité structurelle" },
-    { titre: "Avalanches de fond", sat: 5, desc: "Glissement sur le sol" }
+    { titre: "Neige fraîche", sat: 1, desc: "Surcharge chute", emoji: "❄️" },
+    { titre: "Neige ventée", sat: 2, desc: "Accumulations", emoji: "💨" },
+    { titre: "Neige humide", sat: 3, desc: "Pluie / Fonte", emoji: "💧" },
+    { titre: "S.C. Fragile Persistante", sat: 4, desc: "Instabilité structurelle", emoji: "⚠️" },
+    { titre: "Avalanches de fond", sat: 5, desc: "Glissement sur le sol", emoji: "🏔️" }
 ];
 
 // État du jeu
@@ -61,19 +61,64 @@ schemaNames.forEach((name, idx) => {
     cardsData.push({ id: `img-${idx}`, sat: idx + 1, line: 6, color: rowColors[6], image: `img/${name}.jpg` });
 });
 
+function updateStickyOffset() {
+    const panel = document.getElementById('score-panel');
+    if (!panel) return;
+    document.documentElement.style.setProperty('--score-height', (panel.offsetHeight + 6) + 'px');
+}
+
 function initGame() {
     initSounds();
+    createGameHeader();
     createScorePanel();
-    
+    updateStickyOffset();
+    window.addEventListener('resize', updateStickyOffset, { passive: true });
+    window.addEventListener('orientationchange', () => setTimeout(updateStickyOffset, 200), { passive: true });
+
     const headerRow = document.getElementById('header-sat');
     headerRow.innerHTML = '<div class="cat-label spacer"></div>';
     satHeaders.forEach(sat => {
         const div = document.createElement('div');
         div.className = 'sat-header';
-        div.innerHTML = `<strong>${sat.titre}</strong><div class="desc">${sat.desc}</div>`;
+        div.innerHTML = `<div class="sat-emoji">${sat.emoji}</div><strong>${sat.titre}</strong><div class="desc">${sat.desc}</div>`;
         headerRow.appendChild(div);
     });
     
+    showIntroModal();
+}
+
+function showIntroModal() {
+    const modal = document.createElement('div');
+    modal.id = 'intro-modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h2>🏔️ Comment jouer ?</h2>
+            <div class="intro-steps">
+                <div class="intro-step">
+                    <span class="step-icon">📋</span>
+                    <p>Les caractéristiques des 5 SAT apparaissent <strong>ligne par ligne</strong> : Localisation, Déclenchement, Indices…</p>
+                </div>
+                <div class="intro-step">
+                    <span class="step-icon">🃏</span>
+                    <p><strong>Glisse chaque carte</strong> dans la colonne du SAT correspondant. Sur mobile, touche et fais glisser.</p>
+                </div>
+                <div class="intro-step">
+                    <span class="step-icon">✅</span>
+                    <p>Clique <strong>Valider</strong> quand les 5 cartes de la ligne te semblent au bon endroit.</p>
+                </div>
+                <div class="intro-step">
+                    <span class="step-icon">🏆</span>
+                    <p>Moins d'erreurs et plus vite = meilleur score. Bonne chance !</p>
+                </div>
+            </div>
+            <button onclick="startGame()" class="btn-restart">Commencer</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function startGame() {
+    document.getElementById('intro-modal').remove();
     gameStartTime = Date.now();
     startNextStep();
 }
@@ -125,25 +170,49 @@ function initSounds() {
     };
 }
 
+function createGameHeader() {
+    const header = document.createElement('div');
+    header.id = 'game-header';
+    header.innerHTML = `
+        <span class="game-title-icon">🏔️</span>
+        <span class="game-title-text">Situations Avalancheuses Typiques</span>
+    `;
+    document.getElementById('game-container').prepend(header);
+}
+
+function updateProgress() {
+    const fill = document.getElementById('progress-fill');
+    const label = document.getElementById('progress-label');
+    if (!fill || !label) return;
+    fill.style.width = Math.min((currentStep / 7) * 100, 100) + '%';
+    label.textContent = currentStep >= 7 ? 'Terminé !' : `Ligne ${currentStep + 1} / 7`;
+}
+
 function createScorePanel() {
     const panel = document.createElement('div');
     panel.id = 'score-panel';
     panel.innerHTML = `
         <div class="score-item">
-            <span class="score-label">⏱️ Temps</span>
+            <span class="score-label">Temps</span>
             <span class="score-value" id="timer">0:00</span>
         </div>
         <div class="score-item">
-            <span class="score-label">✓ Cartes</span>
+            <span class="score-label">Cartes</span>
             <span class="score-value" id="cards-count">0/35</span>
         </div>
         <div class="score-item">
-            <span class="score-label">❌ Erreurs</span>
+            <span class="score-label">Erreurs</span>
             <span class="score-value" id="moves-count">0</span>
         </div>
         <div class="score-item">
-            <span class="score-label">📊 Score</span>
+            <span class="score-label">Score</span>
             <span class="score-value" id="score">0</span>
+        </div>
+        <div class="score-progress">
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <span class="progress-label" id="progress-label">Ligne 1 / 7</span>
         </div>
     `;
     document.getElementById('game-container').insertBefore(panel, document.getElementById('header-sat'));
@@ -179,6 +248,7 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 function startNextStep() {
+    updateProgress();
     if (currentStep >= 7) {
         endGame();
         return;
