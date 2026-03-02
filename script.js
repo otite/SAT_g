@@ -526,6 +526,8 @@ function endGame() {
 
 function showReview() {
     document.getElementById('victory-modal').remove();
+    document.getElementById('score-panel')?.remove();
+    document.getElementById('header-sat').style.top = '0';
 
     const n = errorCards.size;
     const subtitle = n > 0
